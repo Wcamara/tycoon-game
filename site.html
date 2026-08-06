@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tycoon Web 5.0 - O Império Corporativo</title>
+    <!-- O script abaixo é o que dá o design ao jogo. Se a plataforma bloquear, o site fica quebrado -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -101,7 +102,7 @@
                 </div>
                 
                 <div id="ma-inbox-section" class="hidden glass-panel p-6 rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.05)] bg-gradient-to-r from-slate-900 to-amber-950/20">
-                    <h3 class="text-lg font-black text-amber-400 mb-4"><i class="fa-solid fa-handshake mr-2"></i> Mesa de Negociações (Ofertas Recebidas)</h3>
+                    <h3 class="text-lg font-black text-amber-400 mb-4"><i class="fa-solid fa-handshake mr-2"></i> Mesa de Negociações (Ofertas M&A)</h3>
                     <div id="ma-inbox-list" class="space-y-3"></div>
                 </div>
                 
@@ -146,7 +147,7 @@
             <section id="tab-banco" class="tab-content space-y-6">
                 <h2 class="text-3xl font-black tracking-tight mb-6">Banco & Venture Capital</h2>
                 
-                <!-- DESTAQUE EXTRATO BANCÁRIO -->
+                <!-- EXTRATO BANCÁRIO -->
                 <div class="glass-panel p-0 rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl mb-8 overflow-hidden">
                     <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center gap-3">
                         <i class="fa-solid fa-file-invoice-dollar text-slate-400 text-xl"></i>
@@ -195,7 +196,7 @@
                 </div>
 
                 <div>
-                    <h3 class="text-xl font-black text-emerald-500 mb-4 flex items-center gap-2 border-b border-emerald-900/50 pb-2"><i class="fa-solid fa-scale-balanced"></i> Senado (Compra Direta com Legado)</h3>
+                    <h3 class="text-xl font-black text-emerald-500 mb-4 flex items-center gap-2 border-b border-emerald-900/50 pb-2"><i class="fa-solid fa-scale-balanced"></i> Congresso (Compra Direta com Legado)</h3>
                     <div id="politicians-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
                 </div>
 
@@ -383,7 +384,7 @@
             ]
         };
 
-        // --- STREAMING_CHUNK:Funções de UI Gerais ---
+        // --- STREAMING_CHUNK:Definindo Funções Utilitárias e UI ---
         function switchTab(id) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('bg-indigo-500/10', 'text-indigo-400'));
@@ -414,7 +415,6 @@
 
         function hasPol(id) {
             if (state.player.politicians.includes(id)) return true;
-            // Efeitos em cascata para cargos políticos do jogador
             if (id === 'deputado' && ['prefeito', 'governador', 'presidente'].includes(state.player.office)) return true;
             if (id === 'senador' && ['governador', 'presidente'].includes(state.player.office)) return true;
             if (id === 'presidente' && state.player.office === 'presidente') return true;
@@ -429,7 +429,7 @@
             return true;
         }
 
-        // --- STREAMING_CHUNK:Motor Financeiro Principal ---
+        // --- STREAMING_CHUNK:Calculando as Finanças e Atualizando a UI Principal ---
         function calcFinances() {
             let profit = 0, exp = 0, pass = 0, nw = state.cash + state.bank.cdb - state.bank.loan;
             
@@ -444,7 +444,7 @@
                 if(!c.upgrades) c.upgrades = { tech: 0, mkt: 0 };
                 if(!c.focus) c.focus = 'padrao';
                 if(c.ownership === undefined) c.ownership = 100;
-                if(c.openForSale === undefined) c.openForSale = true; // Garante que empresas antigas abram pra venda
+                if(c.openForSale === undefined) c.openForSale = true;
 
                 let p = 1.0 + life.boost;
                 if(c.managers > 0) p += 0.3;
@@ -530,7 +530,7 @@
             if(document.getElementById('tab-poder').classList.contains('active')) renderPower();
         }
 
-        // --- STREAMING_CHUNK:Funções de Renderização das Empresas e RH ---
+        // --- STREAMING_CHUNK:Renderizando M&A e RH das Empresas ---
         function renderEmpresas() {
             const list = document.getElementById('empresas-list');
             const inboxList = document.getElementById('ma-inbox-list');
@@ -617,7 +617,7 @@
         function hire(id, t, qty) {
             let c = state.companies.find(x => x.id === id); 
             let p = state.ownedProperties.find(x => x.id === c.propertyId);
-            let cap = p ? p.cap : 999999999; // Sem limite se for gigante sem sede
+            let cap = p ? p.cap : 999999999;
             let current = c.workers + c.managers;
             qty = Number(qty);
             
@@ -905,7 +905,7 @@
                 </div>`).join('');
         }
 
-        // --- STREAMING_CHUNK:Lógicas de Política, Mídia e Rivais ---
+        // --- STREAMING_CHUNK:Lógicas de Poder, Mídia e Rivais ---
         function updateFNTargets() {
             let t = document.getElementById('fn-type').value;
             let sel = document.getElementById('fn-target');
@@ -964,9 +964,8 @@
             
             showToast('Campanha Lançada!', `O dinheiro foi gasto nas ruas. Aguardando apuração...`, 'info');
             
-            // Simula o tempo de eleição
             setTimeout(() => {
-                if (Math.random() > 0.4) { // 60% chance de ganhar
+                if (Math.random() > 0.4) {
                     state.player.office = id;
                     showToast('VITÓRIA NAS URNAS!', `Você foi eleito ${id.toUpperCase()}! Benefícios ativos.`, 'success');
                     addNews('MUNDO', `Magnata bilionário é eleito ${id.toUpperCase()} com campanha massiva.`);
@@ -1071,7 +1070,7 @@
             updateUI();
         }
 
-        // --- STREAMING_CHUNK:Lógicas de Passagem de Turno e Inteligência Artificial ---
+        // --- STREAMING_CHUNK:Motor de Inteligência Artificial e Passagem de Tempo ---
         function checkAIProposals() {
             if(state.companies.length === 0) return;
             
@@ -1080,12 +1079,9 @@
                 
                 if(trg.profit > 5000) { 
                     let valuation = (trg.valuation * (trg.ownership/100));
-                    
-                    // O multiplicador da oferta da IA vai de 1x a 1.8x o valor da empresa
                     let offerMult = 1.0 + (Math.random() * 0.8);
                     let val = valuation * offerMult;
                     
-                    // Se a empresa está FECHADA para venda, ignora a oferta A MENOS QUE seja um absurdo (> 1.5x)
                     let isClosed = trg.openForSale === false;
                     if(isClosed && offerMult < 1.50) return; 
                     
@@ -1112,19 +1108,17 @@
         function advanceMonth() {
             state.turn++;
             
-            // Sistema de Eras e Cooldowns corrigido
             if(state.economy.eraTime > 0) {
                 state.economy.eraTime--;
                 if(state.economy.eraTime <= 0) { 
                     state.economy.era = 'estabilidade'; 
-                    state.economy.cooldown = 18 + Math.floor(Math.random()*18); // 1.5 a 3 anos de paz garantida
+                    state.economy.cooldown = 18 + Math.floor(Math.random()*18);
                     addNews('MUNDO', 'A economia global entra em um período de estabilidade.'); 
                     showToast('Fim do Ciclo', 'O mercado se acalmou.', 'info');
                 }
             } else if (state.economy.cooldown > 0) {
                 state.economy.cooldown--;
             } else {
-                // Apenas 3% de chance de rolar evento ao acabar a paz
                 if (Math.random() < 0.03) { 
                     let r = Math.random();
                     if(r < 0.45) { 
@@ -1144,10 +1138,8 @@
             Object.keys(state.economy.demands).forEach(k => state.economy.demands[k] = Math.max(0.1, (Math.random()*0.4 + 0.8) * b));
             state.b3.forEach(s => { s.price = Math.max(0.5, s.price * (1 + (Math.random()*0.15 - 0.07) * b)); s.cap = s.price * 100000; });
             
-            // IA dos Rivais (Corrigindo o bug de ressurreição mágica)
             state.rivals.forEach(r => {
                 r.companies.forEach(c => c.val *= (1 + (Math.random()*0.06 - 0.02) * b * r.aggr));
-                // O rival SÓ consegue fundar empresa nova se ele tiver pelo menos 1 Milhão restando
                 if(Math.random() < 0.01 && r.nw > 1000000) { 
                     r.companies.push({id: 'rc_'+Date.now()+Math.random(), name: 'Nova Holding S.A', val: r.nw * 0.05}); 
                 }
