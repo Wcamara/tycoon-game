@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tycoon Web 5.0 - O Império Corporativo</title>
+    <!-- O script abaixo é o que dá o design ao jogo. Se a plataforma bloquear, o site fica quebrado -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .toast-enter { animation: slideInRight 0.4s forwards; }
+        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .pulse-red { animation: pulseRed 2s infinite; }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); } 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); } }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden selection:bg-emerald-500/30">
+
+    <nav class="glass-panel w-full md:w-64 flex-shrink-0 flex flex-col z-20 border-r border-slate-800">
+        <div class="p-6 border-b border-slate-800 flex items-center justify-between md:justify-center">
+            <h1 class="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-cyan-400 tracking-tighter">
+                <i class="fa-solid fa-building-columns mr-2"></i>TYCOON
+            </h1>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4 px-3 flex flex-row md:flex-col gap-2 overflow-x-auto">
+            <button onclick="switchTab('geral')" id="btn-tab-geral" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-sm bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 whitespace-nowrap"><i class="fa-solid fa-chart-pie w-5"></i> Visão Geral</button>
+            <button onclick="switchTab('empresas')" id="btn-tab-empresas" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-briefcase w-5"></i> Empresas & M&A</button>
+            <button onclick="switchTab('imoveis')" id="btn-tab-imoveis" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-city w-5"></i> Imóveis</button>
+            <button onclick="switchTab('bolsa')" id="btn-tab-bolsa" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-chart-line w-5"></i> Bolsa (B3)</button>
+            <button onclick="switchTab('banco')" id="btn-tab-banco" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-vault w-5"></i> Banco & VC</button>
+            <button onclick="switchTab('poder')" id="btn-tab-poder" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-crown w-5"></i> Poder & Rivais</button>
+        </div>
+        <div class="p-4 border-t border-slate-800 bg-slate-900/50">
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2">Controle do Tempo</p>
+            <div class="flex gap-2">
+                <button onclick="advanceMonth()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-forward-step"></i> Mês</button>
+                <button id="btn-autoplay" onclick="toggleTime()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white p-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-play"></i> Auto</button>
+            </div>
+            <p id="ui-current-date" class="text-center text-xs text-slate-400 mt-2 font-mono">Mês 1 / Ano 1</p>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+        <header class="glass-panel p-4 flex flex-wrap gap-4 items-center justify-between border-b border-slate-800 z-10">
+            <div class="flex items-center gap-6">
+                <div>
+                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest">Caixa Disponível</span>
+                    <span id="ui-cash" class="text-2xl font-black text-emerald-400 tracking-tight">R$ 0,00</span>
+                </div>
+                <div class="hidden sm:block w-px h-10 bg-slate-800"></div>
+                <div>
+                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest">Patrimônio Líquido</span>
+                    <span id="ui-networth" class="text-xl font-bold text-white tracking-tight">R$ 0,00</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-widest">Pontos de Legado</span>
+                    <span id="ui-legacy" class="text-xl font-black text-amber-400"><i class="fa-solid fa-star text-sm"></i> 0</span>
+                </div>
+                <div id="era-badge" class="px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-2 text-slate-300 border-slate-700 bg-slate-900">
+                    <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-current"></span></span>
+                    <span id="era-name">ESTABILIDADE</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative z-0">
+            
+            <!-- ABA: GERAL -->
+            <section id="tab-geral" class="tab-content active space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="glass-panel p-5 rounded-2xl"><div class="text-slate-400 text-xs font-bold uppercase mb-1">Lucro Operacional</div><div id="ui-profit" class="text-2xl font-black text-emerald-400">+ R$ 0,00</div></div>
+                    <div class="glass-panel p-5 rounded-2xl"><div class="text-slate-400 text-xs font-bold uppercase mb-1">Renda Passiva (Aluguéis/CDB)</div><div id="ui-passive-income" class="text-2xl font-black text-sky-400">+ R$ 0,00</div></div>
+                    <div class="glass-panel p-5 rounded-2xl border-rose-900/30"><div class="text-rose-400 text-xs font-bold uppercase mb-1">Despesas & Juros</div><div id="ui-expenses" class="text-2xl font-black text-rose-500">- R$ 0,00</div></div>
+                </div>
+                <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+                    <div class="bg-slate-900 p-3 border-b border-slate-800 flex items-center gap-2"><i class="fa-regular fa-newspaper text-slate-400"></i><h3 class="font-black text-sm text-slate-300 uppercase tracking-widest">The Tycoon Times</h3></div>
+                    <div class="p-0 h-48 overflow-y-auto" id="news-container"></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl"><h3 class="text-lg font-black mb-4">Padrão de Vida</h3><div class="space-y-3" id="lifestyle-container"></div></div>
+                    <div class="glass-panel p-6 rounded-2xl"><h3 class="text-lg font-black mb-4">Demanda Econômica Real</h3><div class="space-y-4" id="economy-indicators"></div></div>
+                </div>
+            </section>
+
+            <!-- ABA: EMPRESAS & M&A -->
+            <section id="tab-empresas" class="tab-content space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div><h2 class="text-3xl font-black tracking-tight">Corporações</h2><p class="text-slate-400 text-sm">Contrate, faça IPO, compre ou venda suas empresas.</p></div>
+                    <button onclick="document.getElementById('modal-nova-empresa').classList.remove('hidden')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg flex items-center gap-2 w-full md:w-auto justify-center"><i class="fa-solid fa-plus"></i> Fundar S.A</button>
+                </div>
+                
+                <div id="ma-inbox-section" class="hidden glass-panel p-6 rounded-2xl border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.05)] bg-gradient-to-r from-slate-900 to-amber-950/20">
+                    <h3 class="text-lg font-black text-amber-400 mb-4"><i class="fa-solid fa-handshake mr-2"></i> Mesa de Negociações (Ofertas M&A)</h3>
+                    <div id="ma-inbox-list" class="space-y-3"></div>
+                </div>
+                
+                <div id="empresas-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- ABA: IMÓVEIS -->
+            <section id="tab-imoveis" class="tab-content space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-end gap-4">
+                    <div><h2 class="text-3xl font-black tracking-tight">Mercado Imobiliário</h2></div>
+                    <select id="region-selector" onchange="renderProperties()" class="w-full md:w-auto bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm font-bold outline-none focus:border-sky-500">
+                        <option value="SP">São Paulo (Alta Renda)</option><option value="RJ">Rio de Janeiro</option><option value="RS">Rio Grande do Sul</option><option value="BA">Bahia (Baixo Custo)</option><option value="DF">Brasília</option>
+                    </select>
+                </div>
+                <h3 class="text-xl font-bold mt-4 border-b border-slate-800 pb-2 text-slate-300">Seus Imóveis</h3>
+                <div id="meus-imoveis-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4"></div>
+                <h3 class="text-xl font-bold mt-8 border-b border-slate-800 pb-2 text-slate-300">À Venda no Mercado</h3>
+                <div id="imoveis-mercado-list" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- ABA: BOLSA B3 -->
+            <section id="tab-bolsa" class="tab-content space-y-6">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tight">Bolsa de Valores (B3)</h2>
+                    <p class="text-slate-400 text-sm">Compre ações, receba dividendos ou faça aquisições hostis (OPA).</p>
+                </div>
+                
+                <div id="b3-portfolio-container" class="hidden glass-panel p-6 rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-slate-900 to-emerald-950/20 mb-6 shadow-xl">
+                    <h3 class="text-lg font-black text-emerald-400 mb-4"><i class="fa-solid fa-wallet mr-2"></i> Minha Carteira de Ações</h3>
+                    <div id="b3-portfolio-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+                </div>
+
+                <div class="glass-panel rounded-2xl overflow-hidden border border-slate-800">
+                    <table class="w-full text-left">
+                        <thead><tr class="bg-slate-950 text-xs uppercase text-slate-400 border-b border-slate-800"><th class="p-4">Ativo</th><th class="p-4">Cotação</th><th class="p-4 text-right">Terminal de Negociação</th></tr></thead>
+                        <tbody id="b3-tbody" class="text-sm divide-y divide-slate-800/50"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ABA: BANCO E VC -->
+            <section id="tab-banco" class="tab-content space-y-6">
+                <h2 class="text-3xl font-black tracking-tight mb-6">Banco & Venture Capital</h2>
+                
+                <!-- EXTRATO BANCÁRIO -->
+                <div class="glass-panel p-0 rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl mb-8 overflow-hidden">
+                    <div class="bg-slate-800 px-6 py-4 border-b border-slate-700 flex items-center gap-3">
+                        <i class="fa-solid fa-file-invoice-dollar text-slate-400 text-xl"></i>
+                        <h3 class="text-lg font-black text-white">Extrato de Movimentações</h3>
+                    </div>
+                    <div class="h-48 overflow-y-auto p-2">
+                        <table class="w-full text-sm">
+                            <tbody id="statement-tbody" class="divide-y divide-slate-800/50"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 to-sky-950/20">
+                        <h3 class="text-lg font-black text-sky-400 mb-2">Investimentos (CDB: 1.5% a.m)</h3>
+                        <div class="bg-slate-950 p-4 rounded-xl my-4 border border-slate-800"><span class="block text-[10px] text-slate-500 font-bold uppercase">Saldo Aplicado</span><span id="ui-cdb-balance" class="text-2xl font-black text-white">R$ 0,00</span></div>
+                        <div class="flex gap-2"><input type="number" id="input-cdb" placeholder="R$ Valor" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 text-white outline-none focus:border-sky-500"><button onclick="bankAction('invest')" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-4 rounded-lg">Aplicar</button><button onclick="bankAction('redeem')" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded-lg">Resgatar</button></div>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 to-rose-950/20">
+                        <h3 class="text-lg font-black text-rose-400 mb-2">Empréstimos (5.0% a.m)</h3>
+                        <div class="bg-slate-950 p-4 rounded-xl my-4 border border-rose-900/30"><span class="block text-[10px] text-slate-500 font-bold uppercase">Dívida Ativa</span><span id="ui-loan-balance" class="text-2xl font-black text-rose-400">R$ 0,00</span></div>
+                        <div class="flex gap-2"><input type="number" id="input-loan" placeholder="R$ Valor" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 text-white outline-none focus:border-rose-500"><button onclick="bankAction('take')" class="bg-rose-700 hover:bg-rose-600 text-white font-bold py-2 px-4 rounded-lg">Pegar</button><button onclick="bankAction('pay')" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-2 px-4 rounded-lg">Quitar</button></div>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-bold border-b border-slate-800 pb-2 mt-8 text-slate-300"><i class="fa-solid fa-lightbulb text-amber-400 mr-2"></i>Venture Capital (Investimento Anjo)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 mb-8">
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800">
+                        <h4 class="text-sm font-bold text-slate-400 mb-4">Pitches de Startups (Ofertas)</h4>
+                        <div id="vc-offers-list" class="space-y-3 max-h-48 overflow-y-auto pr-2"></div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl border border-slate-800">
+                        <h4 class="text-sm font-bold text-slate-400 mb-4">Meu Portfólio de Startups</h4>
+                        <div id="my-vcs-list" class="space-y-3 max-h-48 overflow-y-auto pr-2"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABA: PODER & RIVAIS -->
+            <section id="tab-poder" class="tab-content space-y-8">
+                <div><h2 class="text-3xl font-black tracking-tight mb-2">Poder, Política & Rivais</h2><p class="text-slate-400 text-sm">Compre políticos, concorra a cargos, erga monumentos e sabote seus concorrentes.</p></div>
+                
+                <div>
+                    <h3 class="text-xl font-black text-indigo-500 mb-4 flex items-center gap-2 border-b border-indigo-900/50 pb-2"><i class="fa-solid fa-podium"></i> Carreira Política (Eleições)</h3>
+                    <div id="elections-list" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-black text-emerald-500 mb-4 flex items-center gap-2 border-b border-emerald-900/50 pb-2"><i class="fa-solid fa-scale-balanced"></i> Congresso (Compra Direta com Legado)</h3>
+                    <div id="politicians-list" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-black text-fuchsia-500 mb-4 flex items-center gap-2 border-b border-fuchsia-900/50 pb-2"><i class="fa-solid fa-mask"></i> Central de Mídia e Fake News</h3>
+                    <div class="glass-panel p-5 rounded-2xl border border-fuchsia-900/50 bg-gradient-to-br from-slate-900 to-fuchsia-950/20">
+                        <p class="text-sm text-slate-300 mb-4">Financie campanhas para criar bolhas ou inflar a economia do jogo.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Ação (R$ 500.000)</label>
+                                <select id="fn-type" onchange="updateFNTargets()" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white outline-none focus:border-fuchsia-500">
+                                    <option value="hype">Criar Hype (Inflar Setor)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Alvo</label>
+                                <select id="fn-target" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white outline-none"></select>
+                            </div>
+                            <button onclick="plantFakeNews()" class="bg-fuchsia-700 hover:bg-fuchsia-600 text-white font-black py-3 rounded-xl shadow-[0_0_15px_rgba(192,38,211,0.2)] transition-colors"><i class="fa-solid fa-bullhorn mr-2"></i> Lançar Campanha</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-black text-cyan-400 mb-4 flex items-center gap-2 border-b border-cyan-900/50 pb-2"><i class="fa-solid fa-globe"></i> Megaprojetos (Geradores de Legado)</h3>
+                    <div id="megaprojects-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-black text-rose-500 mb-4 flex items-center gap-2 border-b border-rose-900/50 pb-2"><i class="fa-solid fa-skull"></i> Rivais Bilionários</h3>
+                    <div id="rivals-list" class="grid grid-cols-1 xl:grid-cols-3 gap-6"></div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal: Nova Empresa -->
+    <div id="modal-nova-empresa" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-indigo-500/50 p-6 rounded-2xl w-full max-w-md shadow-2xl">
+            <h3 class="text-xl font-black mb-4">Registrar Nova S.A</h3>
+            <div class="space-y-4">
+                <input type="text" id="input-empresa-nome" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white outline-none focus:border-indigo-500" placeholder="Nome da Empresa">
+                <select id="select-empresa-imovel" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white outline-none"></select>
+                <select id="select-empresa-setor" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white outline-none">
+                    <option value="varejo">Varejo</option><option value="tecnologia">Tecnologia</option>
+                    <option value="industria">Indústria</option><option value="rural">Agronegócio</option>
+                    <option value="midia">Mídia & Entretenimento</option>
+                </select>
+                <input type="number" id="input-empresa-capital" placeholder="Injetar Capital (R$) Opcional" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white outline-none focus:border-indigo-500">
+            </div>
+            <div class="mt-6 flex justify-end gap-3"><button onclick="document.getElementById('modal-nova-empresa').classList.add('hidden')" class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Cancelar</button><button onclick="startCompany()" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-lg font-bold text-white transition-colors">Abrir (Taxa: R$ 10.000)</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Administração e P&D -->
+    <div id="modal-manage-company" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-indigo-500 p-8 rounded-2xl w-full max-w-lg shadow-2xl">
+            <h3 class="text-2xl font-black mb-2 text-indigo-400">Conselho de Administração</h3>
+            <p id="manage-comp-name" class="text-white font-bold mb-6 text-lg"></p>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Diretriz Estratégica</label>
+                    <select id="select-manage-focus" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white outline-none focus:border-indigo-500">
+                        <option value="padrao">Crescimento Padrão</option>
+                        <option value="agressivo">Expansão Agressiva (+20% Receita, +30% Custos)</option>
+                        <option value="qualidade">Qualidade Premium (-10% Receita, +40% Valuation)</option>
+                        <option value="corte">Corte de Gastos (-30% Custos, -20% Receita)</option>
+                    </select>
+                </div>
+                <div class="border-t border-slate-800 pt-4">
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Injeção em P&D</label>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="buyCompanyUpgrade('mkt')" class="w-full bg-sky-900 hover:bg-sky-800 border border-sky-700 text-sky-100 rounded-lg p-3 text-sm font-bold text-left flex justify-between items-center transition-colors"><span>Campanha de Marketing</span><span class="text-xs text-sky-300">R$ 50k (+10% Rec)</span></button>
+                        <button onclick="buyCompanyUpgrade('tech')" class="w-full bg-emerald-900 hover:bg-emerald-800 border border-emerald-700 text-emerald-100 rounded-lg p-3 text-sm font-bold text-left flex justify-between items-center transition-colors"><span>Pesquisa Tecnológica</span><span class="text-xs text-emerald-300">R$ 150k (+25% Rec)</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end gap-3"><button onclick="document.getElementById('modal-manage-company').classList.add('hidden')" class="px-4 py-2 text-slate-400 hover:text-white transition-colors">Fechar</button><button onclick="saveCompanyManagement()" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-lg font-bold text-white transition-colors">Salvar Estratégia</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Anunciar Venda -->
+    <div id="modal-announce-sale" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-amber-500 p-8 rounded-2xl w-full max-w-md shadow-2xl">
+            <h3 class="text-2xl font-black mb-2 text-amber-400">Vender Empresa</h3>
+            <p id="sale-comp-name" class="text-white font-bold mb-4"></p>
+            <input type="number" id="input-sale-price" placeholder="Seu Preço Desejado (R$)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white text-lg outline-none focus:border-amber-500">
+            <p class="text-xs text-slate-400 mt-2">Um preço muito fora do mercado será ignorado ou gerará uma contraproposta.</p>
+            <div class="mt-6 flex justify-end gap-3"><button onclick="document.getElementById('modal-announce-sale').classList.add('hidden')" class="px-4 py-2 text-slate-400">Cancelar</button><button onclick="confirmSale()" class="bg-amber-600 hover:bg-amber-500 px-6 py-2 rounded-lg font-bold text-white">Anunciar Venda</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Fazer Contraproposta -->
+    <div id="modal-negotiate-offer" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-sky-500 p-8 rounded-2xl w-full max-w-md shadow-2xl">
+            <h3 class="text-2xl font-black mb-2 text-sky-400">Contraproposta (M&A)</h3>
+            <p id="negotiate-comp-name" class="text-white font-bold mb-4"></p>
+            <input type="number" id="input-negotiate-price" placeholder="Seu Preço (R$)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white text-lg outline-none focus:border-sky-500">
+            <p class="text-xs text-rose-400 mt-2">Cuidado: Se pedir acima do teto do comprador, eles abandonam a mesa!</p>
+            <div class="mt-6 flex justify-end gap-3"><button onclick="document.getElementById('modal-negotiate-offer').classList.add('hidden')" class="px-4 py-2 text-slate-400">Voltar</button><button onclick="submitNegotiation()" class="bg-sky-600 hover:bg-sky-500 px-6 py-2 rounded-lg font-bold text-white">Enviar Oferta</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Comprar Empresa de Rivais -->
+    <div id="modal-rival-offer" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-rose-500 p-8 rounded-2xl w-full max-w-md shadow-2xl">
+            <h3 class="text-2xl font-black mb-2 text-rose-400">Aquisição Hostil (Rival)</h3>
+            <p id="rival-offer-comp-name" class="text-white font-bold mb-2"></p>
+            <p id="rival-offer-val" class="text-sm text-slate-400 mb-6 font-mono"></p>
+            <input type="number" id="input-rival-offer" placeholder="Sua Oferta (R$)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-white text-lg outline-none focus:border-rose-500">
+            <p class="text-xs text-rose-400 mt-2">Você precisará pagar um Ágio (30% a 50% acima do mercado) para convencer o rival a vender.</p>
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="document.getElementById('modal-rival-offer').classList.add('hidden')" class="px-4 py-2 text-slate-400">Cancelar</button>
+                <button onclick="submitRivalOffer()" class="bg-rose-700 hover:bg-rose-600 px-6 py-2 rounded-lg font-bold text-white">Enviar Oferta</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container" class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+        
+        const COSTS = { companyCreation: 10000, workerSalary: 1500, managerSalary: 4500, workerBaseRevenue: 2200, rentFee: 0.05 };
+        const LIFESTYLES = [
+            { id: 'sobrevivencia', name: 'Sobrevivência', cost: 1500, boost: 0 },
+            { id: 'classe_media', name: 'Classe Média', cost: 8000, boost: 0.05 },
+            { id: 'luxo', name: 'Luxo', cost: 25000, boost: 0.15 },
+            { id: 'magnata', name: 'Magnata (Networking)', cost: 50000, boost: 0.30 }
+        ];
+        
+        const ELECTIONS = [
+            { id: 'prefeito', name: 'Prefeito', cost: 10000000, leg: 200, desc: 'Zera seu Custo de Vida e a manutenção dos imóveis.', icon: 'fa-city' },
+            { id: 'governador', name: 'Governador', cost: 50000000, leg: 1000, desc: 'Zera juros do banco e ganha 10% do PIB regional.', icon: 'fa-map' },
+            { id: 'presidente', name: 'Presidente da República', cost: 500000000, leg: 5000, desc: 'Imunidade PF, isenção de Leão/IGF e lucros exorbitantes.', icon: 'fa-flag' }
+        ];
+
+        const POLITICIANS = [
+            { id: 'deputado', name: 'Bancada Federal', cost: 50, desc: 'Isenta você do Custo de Vida e IPTU dos imóveis.', icon: 'fa-users' },
+            { id: 'senador', name: 'Senador Aliado', cost: 250, desc: 'Força o banco a zerar os juros dos seus empréstimos.', icon: 'fa-building-columns' },
+            { id: 'presidente', name: 'Presidente (Fantoche)', cost: 1000, desc: 'Isenção total de impostos (Leão), imunidade da PF e +50% nos lucros.', icon: 'fa-crown' }
+        ];
+        
+        const MEGAPROJECTS = [
+            { id: 'ong', name: 'Fundação Filantrópica', cost: 100000000, legacy: 100, icon: 'fa-hand-holding-heart' },
+            { id: 'espaco', name: 'Programa Espacial', cost: 2000000000, legacy: 500, icon: 'fa-rocket' },
+            { id: 'smartcity', name: 'Smart City', cost: 5000000000, legacy: 1500, icon: 'fa-city' }
+        ];
+        
+        const REGIONS = { 'SP': { cost: 3.0, rev: 2.5 }, 'RJ': { cost: 2.0, rev: 1.8 }, 'DF': { cost: 4.0, rev: 2.2 }, 'RS': { cost: 1.5, rev: 1.4 }, 'BA': { cost: 1.0, rev: 1.0 } };
+        
+        const PROP_TYPES = [
+            { type: 'lote', name: 'Lote (com Contêiner)', cap: 5, price: 15000, maint: 200 },
+            { type: 'quiosque', name: 'Quiosque', cap: 2, price: 25000, maint: 800 },
+            { type: 'loja', name: 'Loja de Rua', cap: 15, price: 80000, maint: 2500 },
+            { type: 'apt', name: 'Andar Comercial', cap: 30, price: 180000, maint: 3500 },
+            { type: 'fazenda', name: 'Fazenda', cap: 50, price: 250000, maint: 4000 },
+            { type: 'galpao', name: 'Galpão Industrial', cap: 100, price: 500000, maint: 8000 },
+            { type: 'predio', name: 'Prédio Comercial', cap: 250, price: 2500000, maint: 40000 },
+            { type: 'shopping', name: 'Shopping Center', cap: 800, price: 25000000, maint: 350000 }
+        ];
+
+        let state = {
+            cash: 30000, turn: 1, netWorth: 30000, autoPlay: null,
+            companies: [], ownedProperties: [], bank: { cdb: 0, loan: 0 }, statement: [], news: [],
+            vcOffers: [], myVCs: [], 
+            player: { lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null },
+            economy: { 
+                era: 'estabilidade', eraTime: 0, cooldown: 24, 
+                demands: { varejo: 1.0, tecnologia: 1.0, industria: 1.0, rural: 1.0, midia: 1.0, imoveis: 1.0 } 
+            },
+            b3: [ 
+                { id: 'petr4', name: 'Petrobras', price: 35.50, cap: 3500000 }, { id: 'vale3', name: 'Vale S.A', price: 65.20, cap: 6500000 }, 
+                { id: 'itub4', name: 'Itaú', price: 28.90, cap: 2800000 }, { id: 'wege3', name: 'WEG', price: 42.00, cap: 4200000 }, 
+                { id: 'agro3', name: 'BrasilAgro', price: 25.10, cap: 2500000 }, { id: 'mglu3', name: 'Magalu', price: 12.30, cap: 1200000 }, 
+                { id: 'bbse3', name: 'BB Seguridade', price: 31.40, cap: 3100000 }, { id: 'rent3', name: 'Localiza', price: 55.80, cap: 5500000 }, 
+                { id: 'cmin3', name: 'CSN', price: 14.20, cap: 1400000 }
+            ],
+            portfolio: {}, inboxOffers: [], pendingSaleId: null, pendingNegId: null, pendingManageId: null,
+            pendingRivalId: null, pendingRivalCompId: null,
+            rivals: [
+                { id: 'elon', name: 'Elon Tusk', nw: 500000000, aggr: 1.2, companies: [{id: 'rc_1', name: 'SpaceX', val: 300000000}, {id: 'rc_2', name: 'Tusk Motors', val: 200000000}] },
+                { id: 'jorge', name: 'Jorge Lemão', nw: 800000000, aggr: 1.0, companies: [{id: 'rc_3', name: 'Ambev', val: 500000000}, {id: 'rc_4', name: 'Lojas Americanas', val: 300000000}] },
+                { id: 'havan', name: 'Veio da Havan', nw: 300000000, aggr: 1.5, companies: [{id: 'rc_5', name: 'Lojas Havan', val: 300000000}] }
+            ]
+        };
+
+        // --- STREAMING_CHUNK:Definindo Funções Utilitárias e UI ---
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('bg-indigo-500/10', 'text-indigo-400'));
+            document.getElementById(`tab-${id}`).classList.add('active');
+            document.getElementById(`btn-tab-${id}`).classList.add('bg-indigo-500/10', 'text-indigo-400');
+            updateUI();
+        }
+
+        function showToast(title, msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const colors = { info: 'border-sky-500 bg-sky-950', success: 'border-emerald-500 bg-emerald-950', danger: 'border-rose-500 bg-rose-950', warning: 'border-amber-500 bg-amber-950' };
+            const t = document.createElement('div');
+            t.className = `toast-enter border-l-4 p-4 rounded shadow-lg flex gap-3 text-white pointer-events-auto z-50 ${colors[type]}`;
+            t.innerHTML = `<div><h4 class="font-bold text-sm">${title}</h4><p class="text-xs opacity-90">${msg}</p></div>`;
+            container.appendChild(t);
+            setTimeout(() => { if(t.parentNode) t.remove(); }, 6000);
+        }
+
+        function logTx(desc, val) {
+            state.statement.unshift({ m: state.turn, desc, val });
+            if(state.statement.length > 50) state.statement.pop();
+        }
+
+        function addNews(type, title) {
+            state.news.unshift({ type, title });
+            if(state.news.length > 20) state.news.pop();
+        }
+
+        function hasPol(id) {
+            if (state.player.politicians.includes(id)) return true;
+            if (id === 'deputado' && ['prefeito', 'governador', 'presidente'].includes(state.player.office)) return true;
+            if (id === 'senador' && ['governador', 'presidente'].includes(state.player.office)) return true;
+            if (id === 'presidente' && state.player.office === 'presidente') return true;
+            return false;
+        }
+
+        function checkBalance(amount) {
+            if (state.cash < amount) {
+                showToast('Saldo Insuficiente', `Você precisa de ${fmt.format(amount)}, mas só tem ${fmt.format(state.cash)}.`, 'danger');
+                return false;
+            }
+            return true;
+        }
+
+        // --- STREAMING_CHUNK:Calculando as Finanças e Atualizando a UI Principal ---
+        function calcFinances() {
+            let profit = 0, exp = 0, pass = 0, nw = state.cash + state.bank.cdb - state.bank.loan;
+            
+            const hasRural = state.companies.some(c => c.sector === 'rural');
+            const hasInd = state.companies.some(c => c.sector === 'industria');
+            const hasMidia = state.companies.some(c => c.sector === 'midia');
+            const life = LIFESTYLES.find(l => l.id === state.player.lifestyle);
+            
+            if(!hasPol('deputado')) exp += life.cost;
+
+            state.companies.forEach(c => {
+                if(!c.upgrades) c.upgrades = { tech: 0, mkt: 0 };
+                if(!c.focus) c.focus = 'padrao';
+                if(c.ownership === undefined) c.ownership = 100;
+                if(c.openForSale === undefined) c.openForSale = true;
+
+                let p = 1.0 + life.boost;
+                if(c.managers > 0) p += 0.3;
+                p += Math.min(0.2, (c.invested || 0) / 1000000);
+                if(hasMidia) p += 0.15; 
+                if(hasPol('presidente')) p += 0.50;
+                
+                p += (c.upgrades.tech * 0.25);
+                p += (c.upgrades.mkt * 0.10);
+                
+                let dem = state.economy.demands[c.sector] || 1.0;
+                let rev = (c.workers * COSTS.workerBaseRevenue) * p * dem;
+                let cost = (c.workers * COSTS.workerSalary) + (c.managers * COSTS.managerSalary);
+                
+                if(c.sector === 'industria' && hasRural) cost *= 0.8;
+                if(c.sector === 'varejo' && hasInd) rev *= 1.25;
+
+                if(c.focus === 'agressivo') { rev *= 1.20; cost *= 1.30; } 
+                if(c.focus === 'qualidade') { rev *= 0.90; } 
+                if(c.focus === 'corte') { cost *= 0.70; rev *= 0.80; } 
+
+                c.profit = rev - cost;
+                
+                let myShare = c.profit * (c.ownership / 100);
+                if(myShare > 0) profit += myShare; else exp += Math.abs(myShare);
+                
+                let prop = state.ownedProperties.find(x => x.id === c.propertyId);
+                c.valuation = (prop ? prop.basePrice : 0) + (c.profit > 0 ? c.profit * 24 : 0) + (c.invested || 0);
+                if(c.focus === 'qualidade') c.valuation *= 1.40;
+                
+                nw += c.valuation * (c.ownership / 100);
+            });
+
+            state.ownedProperties.forEach(p => {
+                if(!state.companies.some(c => c.propertyId === p.id)) {
+                    nw += p.basePrice * state.economy.demands.imoveis;
+                    if(p.rented) pass += p.basePrice * COSTS.rentFee;
+                    else if(!hasPol('deputado')) exp += p.maint;
+                }
+            });
+
+            pass += state.bank.cdb * 0.015;
+            let jurosLoan = hasPol('senador') ? 0 : (state.economy.era === 'recessao' ? 0.08 : 0.05);
+            exp += state.bank.loan * jurosLoan;
+            
+            state.b3.forEach(s => { if(state.portfolio[s.id]) nw += s.price * state.portfolio[s.id]; });
+            state.myVCs.forEach(vc => { if(vc.status === 'active') nw += vc.req; });
+
+            state.netWorth = nw;
+
+            document.getElementById('ui-cash').textContent = fmt.format(state.cash);
+            document.getElementById('ui-cash').className = `text-2xl font-black ${state.cash >= 0 ? 'text-emerald-400' : 'text-rose-500'}`;
+            document.getElementById('ui-networth').textContent = fmt.format(nw);
+            document.getElementById('ui-legacy').innerHTML = `<i class="fa-solid fa-star text-sm"></i> ${state.player.legacy}`;
+            
+            document.getElementById('ui-profit').textContent = `+ ${fmt.format(profit)}`;
+            document.getElementById('ui-passive-income').textContent = `+ ${fmt.format(pass)}`;
+            document.getElementById('ui-expenses').textContent = `- ${fmt.format(exp)}`;
+            
+            let badge = document.getElementById('era-badge');
+            document.getElementById('era-name').textContent = state.economy.era.toUpperCase();
+            badge.className = `px-3 py-1.5 rounded-full text-xs font-bold border flex items-center gap-2 ${state.economy.era === 'estabilidade' ? 'text-slate-300 border-slate-700 bg-slate-900' : (state.economy.era === 'boom' ? 'text-emerald-300 border-emerald-700 bg-emerald-950 pulse-red' : 'text-rose-300 border-rose-700 bg-rose-950 pulse-red')}`;
+        }
+
+        function updateUI() {
+            calcFinances();
+            document.getElementById('ui-current-date').textContent = `Mês ${((state.turn-1)%12)+1} / Ano ${Math.floor((state.turn-1)/12)+1}`;
+            
+            if(document.getElementById('tab-geral').classList.contains('active')) {
+                document.getElementById('lifestyle-container').innerHTML = LIFESTYLES.map(l => `
+                    <button onclick="state.player.lifestyle='${l.id}';updateUI()" class="w-full text-left p-3 rounded-xl border transition-colors ${state.player.lifestyle===l.id ? 'bg-indigo-900 border-indigo-500 text-indigo-300':'bg-slate-900 border-slate-700 text-slate-400 hover:bg-slate-800'}">
+                        <span class="font-bold">${l.name}</span> <span class="text-xs opacity-70">(${fmt.format(l.cost)})</span>
+                    </button>`).join('');
+                document.getElementById('economy-indicators').innerHTML = Object.entries(state.economy.demands).map(([s,d]) => `
+                    <div class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-800"><span class="text-sm font-bold capitalize text-slate-400">${s}</span><span class="font-mono ${d>1.1?'text-emerald-400':(d<0.9?'text-rose-400':'text-slate-300')} bg-slate-950 px-2 py-1 rounded border border-slate-800">${(d*100).toFixed(0)}%</span></div>
+                `).join('');
+                document.getElementById('news-container').innerHTML = state.news.map(n => `<div class="p-3 border-b border-slate-800/50 text-sm text-slate-300"><span class="font-black ${n.type==='CRISE'?'text-rose-500':(n.type==='BOOM'?'text-emerald-400':(n.type==='OPORTUNIDADE'?'text-amber-400':'text-sky-400'))} mr-2">[${n.type}]</span>${n.title}</div>`).join('');
+            }
+            if(document.getElementById('tab-empresas').classList.contains('active')) renderEmpresas();
+            if(document.getElementById('tab-imoveis').classList.contains('active')) renderProperties();
+            if(document.getElementById('tab-bolsa').classList.contains('active')) renderB3();
+            if(document.getElementById('tab-banco').classList.contains('active')) renderBank();
+            if(document.getElementById('tab-poder').classList.contains('active')) renderPower();
+        }
+
+        // --- STREAMING_CHUNK:Renderizando M&A e RH das Empresas ---
+        function renderEmpresas() {
+            const list = document.getElementById('empresas-list');
+            const inboxList = document.getElementById('ma-inbox-list');
+            const inboxSec = document.getElementById('ma-inbox-section');
+
+            if(state.inboxOffers.length > 0) {
+                inboxSec.classList.remove('hidden');
+                inboxList.innerHTML = state.inboxOffers.map(o => `
+                    <div class="bg-slate-950 p-4 border border-slate-700 rounded-xl flex flex-col md:flex-row justify-between md:items-center gap-4 shadow-lg">
+                        <div><p class="text-xs text-amber-500 font-bold uppercase tracking-wider">${o.compName} (Expira: ${o.expires}m)</p><p class="text-2xl font-black text-white">${fmt.format(o.val)}</p></div>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="acceptOffer('${o.id}')" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg font-bold text-white text-sm transition-colors">Aceitar Oferta</button>
+                            ${!o.neg ? `<button onclick="openNeg('${o.id}')" class="bg-sky-600 hover:bg-sky-500 px-4 py-2 rounded-lg font-bold text-white text-sm transition-colors">Contraproposta</button>`:''}
+                            <button onclick="rejectOffer('${o.id}')" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg text-white text-sm transition-colors">Recusar</button>
+                        </div>
+                    </div>`).join('');
+            } else { inboxSec.classList.add('hidden'); }
+
+            list.innerHTML = state.companies.map(c => {
+                let p = state.ownedProperties.find(x => x.id === c.propertyId);
+                let cap = p ? p.cap : 999999;
+                let canIPO = c.workers >= 15 && c.profit > 10000;
+                let totalEmp = c.workers + c.managers;
+
+                return `
+                <div class="glass-panel p-5 rounded-2xl border ${c.profit>=0?'border-emerald-500/30':'border-rose-500/30'} flex flex-col shadow-lg">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-xl font-bold text-white">${c.name}</h3>
+                        <div class="bg-slate-900 px-2 py-1 rounded text-[10px] font-bold text-indigo-400 border border-indigo-900/50">${c.focus.toUpperCase()}</div>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-4"><i class="fa-solid fa-location-dot mr-1"></i> ${p?p.name:'Gigante S.A (Sede Própria)'} | ${c.sector.toUpperCase()} | <span class="text-sky-400">${c.ownership}% Seu</span></p>
+                    
+                    <button onclick="toggleSaleStatus('${c.id}')" class="text-[10px] uppercase font-bold border ${c.openForSale !== false ? 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/50' : 'border-rose-500/30 text-rose-400 hover:bg-rose-900/50'} px-2 py-1 rounded w-full transition-colors mb-2">
+                        <i class="fa-solid ${c.openForSale !== false ? 'fa-door-open' : 'fa-lock'} mr-1"></i> ${c.openForSale !== false ? 'Aberto a Ofertas M&A' : 'Fechado para Venda'}
+                    </button>
+
+                    <div class="bg-slate-900 p-4 rounded-xl mb-4 text-center border border-slate-800 relative">
+                        <div class="absolute top-0 left-0 w-1 h-full ${c.profit>=0?'bg-emerald-500':'bg-rose-500'}"></div>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest block mb-1">Lucro Mensal</span>
+                        <p class="text-2xl font-black ${c.profit>=0?'text-emerald-400':'text-rose-400'}">${fmt.format(c.profit)}</p>
+                    </div>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center justify-between bg-slate-900/50 p-2 rounded-lg border border-slate-800">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Trabalhadores <span class="text-indigo-400">(${totalEmp}/${cap>1000?'∞':cap})</span></span>
+                            <div class="flex gap-1">
+                                <button onclick="fire('${c.id}','w',10)" class="px-2 py-1 bg-rose-950 text-rose-500 rounded text-[10px] font-bold hover:bg-rose-900">-10</button>
+                                <button onclick="fire('${c.id}','w',1)" class="px-2 py-1 bg-rose-900 text-rose-300 rounded text-xs font-bold hover:bg-rose-800">-1</button>
+                                <button onclick="hire('${c.id}','w',1)" class="px-2 py-1 bg-emerald-900 text-emerald-300 rounded text-xs font-bold hover:bg-emerald-800">+1</button>
+                                <button onclick="hire('${c.id}','w',10)" class="px-2 py-1 bg-emerald-950 text-emerald-500 rounded text-[10px] font-bold hover:bg-emerald-900">+10</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between bg-slate-900/50 p-2 rounded-lg border border-slate-800">
+                            <span class="text-xs font-bold text-slate-400 uppercase">Gerentes <span class="text-indigo-400">(${c.managers})</span></span>
+                            <div class="flex gap-1">
+                                <button onclick="fire('${c.id}','m',10)" class="px-2 py-1 bg-rose-950 text-rose-500 rounded text-[10px] font-bold hover:bg-rose-900">-10</button>
+                                <button onclick="fire('${c.id}','m',1)" class="px-2 py-1 bg-rose-900 text-rose-300 rounded text-xs font-bold hover:bg-rose-800">-1</button>
+                                <button onclick="hire('${c.id}','m',1)" class="px-2 py-1 bg-emerald-900 text-emerald-300 rounded text-xs font-bold hover:bg-emerald-800">+1</button>
+                                <button onclick="hire('${c.id}','m',10)" class="px-2 py-1 bg-emerald-950 text-emerald-500 rounded text-[10px] font-bold hover:bg-emerald-900">+10</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto flex flex-col gap-2">
+                        ${c.ownership >= 40 ? `<button onclick="raiseCapital('${c.id}')" class="w-full bg-emerald-700/30 hover:bg-emerald-600 border border-emerald-600 text-emerald-100 rounded-lg py-2 text-xs font-bold transition-colors mb-2"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Captar Investimento (Vender 20%)</button>` : ''}
+                        ${canIPO ? `<button onclick="doIPO('${c.id}')" class="w-full bg-sky-600 hover:bg-sky-500 text-white rounded-lg py-2 text-xs font-bold shadow-[0_0_15px_rgba(2,132,199,0.3)] transition-all uppercase tracking-wider mb-2"><i class="fa-solid fa-bell mr-1"></i> Fazer IPO na B3</button>` : ''}
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="openManageCompany('${c.id}')" class="bg-indigo-700/50 hover:bg-indigo-600 text-indigo-100 border border-indigo-600 rounded-lg py-2 text-xs font-bold transition-colors"><i class="fa-solid fa-gear mr-1"></i> Admin (P&D)</button>
+                            <button onclick="openSale('${c.id}')" class="bg-amber-700/50 hover:bg-amber-600 text-amber-100 border border-amber-600 rounded-lg py-2 text-xs font-bold transition-colors"><i class="fa-solid fa-tag mr-1"></i> Vender S.A</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            if(state.companies.length===0) list.innerHTML = `<div class="col-span-full py-16 text-center border-2 border-dashed border-slate-800 rounded-2xl"><i class="fa-solid fa-briefcase text-4xl text-slate-700 mb-4"></i><p class="text-slate-500 font-medium">Seu portfólio está vazio.</p></div>`;
+        }
+
+        // --- STREAMING_CHUNK:Lógicas M&A e RH ---
+        function toggleSaleStatus(id) {
+            let c = state.companies.find(x => x.id === id);
+            c.openForSale = (c.openForSale === false) ? true : false;
+            updateUI();
+        }
+
+        function hire(id, t, qty) {
+            let c = state.companies.find(x => x.id === id); 
+            let p = state.ownedProperties.find(x => x.id === c.propertyId);
+            let cap = p ? p.cap : 999999999;
+            let current = c.workers + c.managers;
+            qty = Number(qty);
+            
+            if (current + qty > cap) return showToast('Lotação Máxima', 'O imóvel está lotado. Contratação barrada!', 'warning');
+            
+            if (t === 'w') c.workers += qty;
+            if (t === 'm') c.managers += qty;
+            updateUI();
+        }
+
+        function fire(id, t, qty) {
+            let c = state.companies.find(x => x.id === id);
+            qty = Number(qty);
+            if (t === 'w') c.workers = Math.max(0, c.workers - qty);
+            if (t === 'm') c.managers = Math.max(0, c.managers - qty);
+            updateUI();
+        }
+
+        function startCompany() {
+            let n = document.getElementById('input-empresa-nome').value;
+            let pid = document.getElementById('select-empresa-imovel').value;
+            let sec = document.getElementById('select-empresa-setor').value;
+            let cap = Number(document.getElementById('input-empresa-capital').value) || 0;
+            if(!n || (!pid && state.ownedProperties.length > 0)) return showToast('Aviso', 'Preencha o nome e selecione um imóvel.', 'warning');
+            
+            let cost = COSTS.companyCreation + cap;
+            if(!checkBalance(cost)) return;
+            
+            state.cash -= cost;
+            state.companies.push({ 
+                id: Date.now().toString(), name: n, propertyId: pid, sector: sec, invested: cap, ownership: 100, openForSale: true,
+                workers: 0, managers: 0, profit: 0, valuation: 0, focus: 'padrao', upgrades: { tech: 0, mkt: 0 } 
+            });
+            logTx(`Fundação Corporativa: ${n}`, -cost);
+            document.getElementById('modal-nova-empresa').classList.add('hidden');
+            showToast('Empreendimento Iniciado', `${n} está pronta para operar.`, 'success');
+            updateUI();
+        }
+
+        function raiseCapital(id) {
+            let c = state.companies.find(x=>x.id===id);
+            if(c.ownership <= 20) return showToast('Limite Atingido', 'Você não pode vender mais, perderia o controle.', 'warning');
+            let equity = 20; let val = Math.max(10000, c.valuation * (equity/100) * 1.3);
+            c.ownership -= equity; state.cash += val; logTx(`Rodada de Investimento: ${c.name}`, val);
+            showToast('Capital Captado', `Vendeu 20% da ${c.name} por ${fmt.format(val)}`, 'success'); updateUI();
+        }
+
+        function openManageCompany(id) {
+            state.pendingManageId = id;
+            let c = state.companies.find(x=>x.id===id);
+            document.getElementById('manage-comp-name').textContent = c.name;
+            document.getElementById('select-manage-focus').value = c.focus || 'padrao';
+            document.getElementById('modal-manage-company').classList.remove('hidden');
+        }
+
+        function saveCompanyManagement() {
+            let c = state.companies.find(x=>x.id===state.pendingManageId);
+            c.focus = document.getElementById('select-manage-focus').value;
+            document.getElementById('modal-manage-company').classList.add('hidden');
+            updateUI(); showToast('Diretriz Atualizada', 'Estratégia salva.', 'success');
+        }
+
+        function buyCompanyUpgrade(type) {
+            let c = state.companies.find(x=>x.id===state.pendingManageId);
+            let cost = type === 'tech' ? 150000 : 50000;
+            if (!checkBalance(cost)) return;
+            state.cash -= cost; c.upgrades[type]++; logTx(`P&D (${type}): ${c.name}`, -cost);
+            updateUI(); showToast('P&D Concluído', 'Infraestrutura modernizada.', 'success');
+        }
+
+        function doIPO(id) {
+            let c = state.companies.find(x=>x.id===id);
+            let val = c.valuation * (c.ownership/100) * 0.4;
+            state.cash += val; logTx(`IPO na B3: ${c.name}`, val);
+            state.b3.push({ id: `ipo_${c.id}`, name: c.name, price: c.valuation / 100000, cap: c.valuation });
+            state.companies = state.companies.filter(x=>x.id!==id);
+            showToast('Sino Tocado!', `IPO arrecadou ${fmt.format(val)}.`, 'success'); addNews('BOOM', `${c.name} estreia na bolsa!`);
+            updateUI();
+        }
+
+        function openSale(id) {
+            state.pendingSaleId = id;
+            document.getElementById('sale-comp-name').textContent = state.companies.find(x=>x.id===id).name;
+            document.getElementById('modal-announce-sale').classList.remove('hidden');
+        }
+
+        function confirmSale() {
+            let price = Number(document.getElementById('input-sale-price').value);
+            if(!price || price<=0) return;
+            let c = state.companies.find(x=>x.id===state.pendingSaleId);
+            let actualValue = c.valuation * (c.ownership/100);
+            
+            if(price <= actualValue * 1.1) {
+                state.cash += price; logTx(`Venda Privada ${c.name}`, price);
+                state.companies = state.companies.filter(x=>x.id !== c.id);
+                showToast('Liquidado!', `Vendido instantaneamente por ${fmt.format(price)}!`, 'success');
+            } else if (price <= actualValue * 2.5) {
+                let max = price * 1.15;
+                state.inboxOffers.push({ id: Date.now().toString(), compId: c.id, compName: c.name, val: price * 0.85, max: max, neg: false, expires: 6 });
+                showToast('Atenção', 'O fundo analisou e fez uma contraproposta na sua Inbox.', 'warning');
+            } else {
+                showToast('Ignorado', 'Preço muito fora da realidade. O mercado zombou de você.', 'danger');
+            }
+            document.getElementById('modal-announce-sale').classList.add('hidden'); updateUI();
+        }
+
+        function openNeg(id) {
+            state.pendingNegId = id;
+            document.getElementById('negotiate-comp-name').textContent = state.inboxOffers.find(x=>x.id===id).compName;
+            document.getElementById('modal-negotiate-offer').classList.remove('hidden');
+        }
+
+        function submitNegotiation() {
+            let p = Number(document.getElementById('input-negotiate-price').value);
+            let o = state.inboxOffers.find(x=>x.id===state.pendingNegId);
+            if(p <= o.max) {
+                o.val = p; o.neg = true;
+                showToast('Sucesso', 'Eles aceitaram as suas condições!', 'success');
+            } else {
+                state.inboxOffers = state.inboxOffers.filter(x=>x.id!==o.id);
+                showToast('Falhou', 'Eles acharam o valor irreal e abandonaram a mesa de negociação.', 'danger');
+            }
+            document.getElementById('modal-negotiate-offer').classList.add('hidden'); updateUI();
+        }
+
+        function acceptOffer(id) {
+            let o = state.inboxOffers.find(x=>x.id===id);
+            state.cash += o.val; logTx(`M&A Finalizado: ${o.compName}`, o.val);
+            state.companies = state.companies.filter(x=>x.id !== o.compId);
+            state.inboxOffers = state.inboxOffers.filter(x=>x.id !== id);
+            updateUI();
+        }
+
+        function rejectOffer(id) { 
+            state.inboxOffers = state.inboxOffers.filter(x=>x.id !== id); 
+            updateUI(); 
+        }
+
+        // --- STREAMING_CHUNK:Lógicas da Bolsa de Valores ---
+        function renderB3() {
+            let portfolioKeys = Object.keys(state.portfolio).filter(k => state.portfolio[k] > 0);
+            let pContainer = document.getElementById('b3-portfolio-container');
+            
+            if(portfolioKeys.length > 0) {
+                pContainer.classList.remove('hidden');
+                document.getElementById('b3-portfolio-list').innerHTML = portfolioKeys.map(k => {
+                    let s = state.b3.find(x => x.id === k);
+                    if(!s) return ''; 
+                    return `<div class="bg-slate-900 p-4 rounded-xl border border-emerald-900/50 shadow-md">
+                        <div class="flex justify-between items-start mb-2"><p class="font-bold text-white">${s.name}</p><span class="text-[10px] text-emerald-400 font-bold bg-emerald-900/30 px-2 py-1 rounded">${k.toUpperCase()}</span></div>
+                        <p class="text-sm text-slate-400 font-mono mb-1">${state.portfolio[k]} cotas</p>
+                        <p class="text-lg font-black text-emerald-400 font-mono">${fmt.format(s.price * state.portfolio[k])}</p>
+                    </div>`;
+                }).join('');
+            } else { pContainer.classList.add('hidden'); }
+
+            document.getElementById('b3-tbody').innerHTML = state.b3.map(s => {
+                let mCap = s.cap || (s.price * 100000);
+                return `
+                <tr class="hover:bg-slate-800/30 transition-colors">
+                    <td class="p-4"><p class="font-bold text-white">${s.name}</p><p class="text-[10px] text-slate-500 uppercase">Tick: ${s.id.toUpperCase()}</p></td>
+                    <td class="p-4"><p class="text-sky-400 font-mono text-lg font-bold">${fmt.format(s.price)}</p></td>
+                    <td class="p-4">
+                        <div class="flex flex-col gap-2 items-end">
+                            <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-700">
+                                <input type="number" id="qtd-${s.id}" placeholder="Qtd." class="w-20 bg-transparent text-sm text-center text-white outline-none font-mono">
+                                <button onclick="trade('${s.id}',1)" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs font-bold">Comprar</button>
+                                <button onclick="trade('${s.id}',-1)" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1 rounded text-xs font-bold">Vender</button>
+                            </div>
+                            <button onclick="doOPA('${s.id}', ${mCap})" class="text-[10px] uppercase font-bold border border-indigo-500/30 hover:bg-indigo-600 text-indigo-400 hover:text-white px-3 py-1 rounded w-full max-w-[200px] transition-colors"><i class="fa-solid fa-bolt mr-1"></i> Aquisição (OPA)</button>
+                        </div>
+                    </td>
+                </tr>`
+            }).join('');
+        }
+
+        function trade(id, dir) {
+            let qtd = Number(document.getElementById(`qtd-${id}`).value); if(!qtd || qtd<=0) return;
+            let s = state.b3.find(x=>x.id===id); let val = s.price * qtd;
+            if(dir>0) { 
+                if(!checkBalance(val)) return; 
+                state.cash -= val; state.portfolio[id] = (state.portfolio[id]||0) + qtd; logTx(`Compra Ações [${id.toUpperCase()}]`, -val); 
+            } else { 
+                if((state.portfolio[id]||0) < qtd) return showToast('Erro', 'Ações insuficientes.', 'danger'); 
+                state.cash += val; state.portfolio[id] -= qtd; logTx(`Venda Ações [${id.toUpperCase()}]`, val); 
+            }
+            updateUI();
+        }
+
+        function doOPA(id, minVal) {
+            let prop = prompt(`OPA (Aquisição Hostil)\nA empresa vale aprox. ${fmt.format(minVal)}.\nSua proposta (R$):`);
+            if(!prop) return; prop = Number(prop); if(!checkBalance(prop)) return;
+            if(prop >= minVal * 1.3) {
+                state.cash -= prop; state.b3 = state.b3.filter(x=>x.id!==id);
+                state.companies.push({ 
+                    id: Date.now().toString(), name: "Corp " + id.toUpperCase(), propertyId: null, sector: 'industria', ownership: 100, openForSale: true,
+                    workers: Math.floor(prop/150000), managers: Math.floor(prop/500000), profit: minVal*0.02, valuation: prop, focus: 'padrao', upgrades: {tech: 3, mkt: 3} 
+                });
+                logTx(`OPA Finalizada: ${id}`, -prop); showToast('CADEIA DE COMANDO', 'O conselho cedeu! A gigante é sua.', 'success'); addNews('BOOM', `Mega aquisição hostil choca a bolsa!`);
+            } else { showToast('Recusado', 'Oferta muito baixa. Conselho rejeitou.', 'danger'); }
+            updateUI();
+        }
+
+        // --- STREAMING_CHUNK:Lógicas Imobiliárias e Bancárias ---
+        function renderProperties() {
+            let reg = document.getElementById('region-selector').value; let mult = REGIONS[reg].cost;
+            let market = PROP_TYPES.map(t => ({ ...t, basePrice: t.price * mult, id: Date.now()+Math.random() }));
+            
+            document.getElementById('imoveis-mercado-list').innerHTML = market.map(p => {
+                let pPrice = p.basePrice * state.economy.demands.imoveis;
+                return `<div class="glass-panel p-4 rounded-xl border border-slate-800 flex flex-col justify-between"><div><h4 class="font-bold text-sky-400">${p.name}</h4><p class="text-xs text-slate-400 mb-2">Cap: ${p.cap} | Manut: ${fmt.format(p.maint)}</p></div><div><p class="text-xl font-black mb-3 text-white">${fmt.format(pPrice)}</p><button onclick="buyProp('${p.type}', ${p.basePrice}, ${p.cap}, ${p.maint}, '${p.name} (${reg})')" class="w-full bg-slate-800 hover:bg-slate-700 text-white rounded py-2 text-sm font-bold">Comprar</button></div></div>`;
+            }).join('');
+                
+            document.getElementById('meus-imoveis-list').innerHTML = state.ownedProperties.map(p => {
+                let isOcc = state.companies.some(c=>c.propertyId===p.id);
+                let currentVal = p.basePrice * state.economy.demands.imoveis * 0.9;
+                return `<div class="bg-slate-900 p-4 rounded-xl border border-slate-700 flex flex-col xl:flex-row justify-between xl:items-center gap-4"><div><h4 class="font-bold text-white">${p.name} <span class="text-xs text-slate-400">(Mercado: ${fmt.format(currentVal)})</span></h4><p class="text-xs text-slate-400">Cap: ${p.cap} | Sit: ${isOcc?'<span class="text-emerald-400">Ocupado S.A</span>':(p.rented?'<span class="text-sky-400">Alugado</span>':'<span class="text-rose-400">Vazio</span>')}</p></div>
+                <div class="flex flex-wrap gap-2">
+                    ${!p.rented ? `<button onclick="upgradeProp('${p.id}')" class="bg-indigo-700 hover:bg-indigo-600 px-3 py-1.5 rounded text-xs text-white font-bold">Reformar</button>`:''} 
+                    ${!isOcc ? `<button onclick="rentProp('${p.id}')" class="${p.rented?'bg-rose-700 hover:bg-rose-600':'bg-sky-600 hover:bg-sky-500'} px-3 py-1.5 rounded text-xs text-white font-bold">${p.rented?'Despejar':'Alugar'}</button>`:''} 
+                    ${!isOcc && !p.rented ? `<button onclick="sellProp('${p.id}')" class="bg-amber-600 hover:bg-amber-500 px-3 py-1.5 rounded text-xs text-white font-bold">Vender</button>`:''}
+                </div></div>`;
+            }).join('');
+            
+            let sel = document.getElementById('select-empresa-imovel');
+            if(sel) sel.innerHTML = '<option value="">-- Imóvel --</option>' + state.ownedProperties.filter(p=>!p.rented && !state.companies.some(c=>c.propertyId===p.id)).map(p=>`<option value="${p.id}">${p.name} (Cap: ${p.cap})</option>`).join('');
+        }
+
+        function buyProp(t, bp, cap, maint, n) { let pr = bp * state.economy.demands.imoveis; if(!checkBalance(pr)) return; state.cash -= pr; state.ownedProperties.push({id: Date.now().toString(), type: t, name: n, cap: cap, maint: maint, basePrice: bp, rented: false}); logTx(`Compra Imóvel: ${n}`, -pr); updateUI(); }
+        function sellProp(id) { let p = state.ownedProperties.find(x=>x.id===id); let val = p.basePrice * state.economy.demands.imoveis * 0.9; state.cash += val; state.ownedProperties = state.ownedProperties.filter(x=>x.id!==id); logTx(`Venda Imóvel: ${p.name}`, val); updateUI(); }
+        function upgradeProp(id) { let p = state.ownedProperties.find(x=>x.id===id); let c = p.basePrice * 0.3; if(!checkBalance(c)) return; state.cash -= c; p.cap = Math.floor(p.cap * 1.5); p.maint *= 1.2; p.basePrice += c; logTx(`Reforma: ${p.name}`, -c); showToast('Reforma', 'Capacidade ampliada.', 'success'); updateUI(); }
+        function rentProp(id) { let p = state.ownedProperties.find(x=>x.id===id); p.rented = !p.rented; if(!p.rented){ state.cash -= p.basePrice*0.05; logTx(`Multa Despejo`, -(p.basePrice*0.05)); } updateUI(); }
+
+        function bankAction(act) {
+            let vC = Number(document.getElementById('input-cdb').value); let vL = Number(document.getElementById('input-loan').value);
+            
+            if(act==='invest' && vC>0) { 
+                if(!checkBalance(vC)) return; 
+                state.cash-=vC; state.bank.cdb+=vC; logTx('CDB Aplicado', -vC); 
+            }
+            if(act==='redeem' && vC>0) { 
+                if(state.bank.cdb<vC) return showToast('Erro', 'Saldo CDB insuficiente.', 'danger'); 
+                state.bank.cdb-=vC; state.cash+=vC; logTx('CDB Resgatado', vC); 
+            }
+            
+            if(act==='take' && vL>0) { 
+                let maxCredito = state.netWorth * 0.30;
+                if ((state.bank.loan + vL) > maxCredito) {
+                    return showToast('Crédito Negado', `O Banco Central limitou sua dívida total a ${fmt.format(maxCredito)} (30% do Patrimônio). Risco muito alto!`, 'danger');
+                }
+                state.cash+=vL; state.bank.loan+=vL; logTx('Empréstimo Feito', vL); 
+            }
+            
+            if(act==='pay' && vL>0) { 
+                if(!checkBalance(vL)) return; 
+                state.cash-=vL; state.bank.loan=Math.max(0,state.bank.loan-vL); logTx('Amortização', -vL); 
+            }
+            updateUI();
+        }
+
+        function investVC(id) {
+            let o = state.vcOffers.find(x=>x.id===id);
+            if(!checkBalance(o.req)) return;
+            state.cash -= o.req; logTx(`VC Anjo: ${o.name}`, -o.req);
+            state.myVCs.push({ ...o, age: 0, status: 'active' });
+            state.vcOffers = state.vcOffers.filter(x=>x.id!==id);
+            updateUI(); showToast('Investimento Realizado', 'Equity adquirido.', 'success');
+        }
+
+        function renderBank() {
+            document.getElementById('ui-cdb-balance').textContent = fmt.format(state.bank.cdb);
+            document.getElementById('ui-loan-balance').textContent = fmt.format(state.bank.loan);
+            
+            document.getElementById('statement-tbody').innerHTML = state.statement.map(s => `<tr><td class="p-3 text-slate-400 font-mono text-xs w-24">Mês ${s.m}</td><td class="p-3 text-slate-300 font-medium">${s.desc}</td><td class="p-3 text-right font-mono font-bold ${s.val>=0?'text-emerald-400':'text-rose-400'}">${fmt.format(s.val)}</td></tr>`).join('');
+            
+            document.getElementById('vc-offers-list').innerHTML = state.vcOffers.map(o => `
+                <div class="bg-slate-900 p-3 rounded-lg flex justify-between items-center border border-slate-700">
+                    <div><p class="font-bold text-white text-sm">${o.name}</p><p class="text-xs text-sky-400">Pede: ${fmt.format(o.req)} (${o.equity}%)</p></div>
+                    <button onclick="investVC('${o.id}')" class="bg-sky-700 hover:bg-sky-600 px-3 py-1 rounded text-xs text-white font-bold">Investir</button>
+                </div>`).join('');
+                
+            document.getElementById('my-vcs-list').innerHTML = state.myVCs.map(vc => `
+                <div class="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                    <div class="flex justify-between"><p class="font-bold text-white text-sm">${vc.name}</p><span class="text-xs font-bold ${vc.status==='active'?'text-amber-400':(vc.status==='sold'?'text-emerald-400':'text-rose-500')}">${vc.status.toUpperCase()}</span></div>
+                </div>`).join('');
+        }
+
+        // --- STREAMING_CHUNK:Lógicas de Poder, Mídia e Rivais ---
+        function updateFNTargets() {
+            let t = document.getElementById('fn-type').value;
+            let sel = document.getElementById('fn-target');
+            if(t === 'hype') sel.innerHTML = Object.keys(state.economy.demands).map(s => `<option value="${s}">Setor: ${s.toUpperCase()}</option>`).join('');
+        }
+        
+        function plantFakeNews() {
+            let cost = 500000; if(!checkBalance(cost)) return; state.cash -= cost;
+            let type = document.getElementById('fn-type').value; let target = document.getElementById('fn-target').value;
+            logTx(`Guerra de Narrativas (Hype)`, -cost);
+            
+            if(type === 'hype') {
+                state.economy.demands[target] *= 1.4;
+                showToast('Hype Criado!', `Demanda de ${target.toUpperCase()} explodiu!`, 'success');
+            }
+            updateUI();
+        }
+
+        function directSabotage(rivalId) {
+            let cost = 500000;
+            if(!checkBalance(cost)) return;
+            state.cash -= cost;
+            logTx(`Espionagem Corporativa`, -cost);
+            
+            let r = state.rivals.find(x => x.id === rivalId);
+            if(r && r.companies.length > 0) {
+                if(Math.random() > 0.3) {
+                    let comp = r.companies[Math.floor(Math.random()*r.companies.length)];
+                    let loss = comp.val * 0.4; 
+                    comp.val -= loss; 
+                    r.nw -= loss;
+                    showToast('Sucesso na Espionagem!', `As ações da ${comp.name} de ${r.name} despencaram!`, 'success');
+                    addNews('OPORTUNIDADE', `Escândalo gravíssimo destrói valor da ${comp.name}!`);
+                } else {
+                    if(!hasPol('presidente')) { 
+                        state.cash -= 5000000; 
+                        showToast('Rastreado!', 'A PF descobriu os IPs. Multa de R$ 5 Milhões!', 'danger'); 
+                        logTx('Multa PF', -5000000);
+                    } else { 
+                        showToast('Abafado', 'A PF tentou investigar a sabotagem, mas seu Presidente barrou.', 'info'); 
+                    }
+                }
+            } else { 
+                showToast('Falha', 'O rival não tem empresas ativas para sabotar.', 'warning'); 
+            }
+            updateUI();
+        }
+
+        function runForOffice(id, cost, leg) {
+            if(state.player.legacy < leg) return showToast('Sem Legado', `Precisa de ${leg} Pontos de Legado para lançar candidatura.`, 'danger');
+            if(!checkBalance(cost)) return;
+            
+            state.cash -= cost;
+            state.player.legacy -= leg;
+            logTx(`Campanha Eleitoral (${id.toUpperCase()})`, -cost);
+            
+            showToast('Campanha Lançada!', `O dinheiro foi gasto nas ruas. Aguardando apuração...`, 'info');
+            
+            setTimeout(() => {
+                if (Math.random() > 0.4) {
+                    state.player.office = id;
+                    showToast('VITÓRIA NAS URNAS!', `Você foi eleito ${id.toUpperCase()}! Benefícios ativos.`, 'success');
+                    addNews('MUNDO', `Magnata bilionário é eleito ${id.toUpperCase()} com campanha massiva.`);
+                } else {
+                    showToast('DERROTA NAS URNAS', 'Seus adversários venceram a eleição. Dinheiro perdido.', 'danger');
+                    addNews('MUNDO', `Campanha bilionária de Tycoon fracassa nas urnas.`);
+                }
+                updateUI();
+            }, 2000);
+            updateUI();
+        }
+
+        function buyPolitician(id, cost) {
+            if(state.player.legacy < cost) return showToast('Sem Legado', `Precisa de ${cost} Pontos de Legado.`, 'danger');
+            state.player.legacy -= cost; state.player.politicians.push(id);
+            updateUI(); showToast('Poder Político', 'Político comprado com sucesso!', 'success');
+        }
+
+        function renderPower() {
+            document.getElementById('elections-list').innerHTML = ELECTIONS.map(e => `
+                <div class="glass-panel p-5 rounded-2xl border ${state.player.office === e.id ? 'border-indigo-500 bg-indigo-900/10' : 'border-slate-700 bg-slate-900'}">
+                    ${state.player.office === e.id ? '<span class="text-[10px] text-indigo-400 font-bold block mb-2">ELEITO</span>' : ''}
+                    <h4 class="font-black text-white text-lg mb-1"><i class="fa-solid ${e.icon} text-indigo-500 mr-2"></i>${e.name}</h4>
+                    <p class="text-xs text-slate-400 mb-4 h-10">${e.desc}</p>
+                    <button ${state.player.office === e.id ? 'disabled' : ''} onclick="runForOffice('${e.id}',${e.cost},${e.leg})" class="w-full ${state.player.office === e.id ? 'bg-indigo-900/50 text-indigo-500' : 'bg-slate-800 text-white hover:bg-slate-700'} py-2 rounded-lg text-sm font-bold shadow-inner transition-colors">${state.player.office === e.id ? 'Cumpindo Mandato' : `Candidatar-se: ${fmt.format(e.cost)} + ${e.leg} Leg`}</button>
+                </div>`).join('');
+
+            document.getElementById('politicians-list').innerHTML = POLITICIANS.map(p => `
+                <div class="glass-panel p-5 rounded-2xl border ${hasPol(p.id)?'border-emerald-500 bg-emerald-900/10':'border-slate-700 bg-slate-900'}">
+                    ${hasPol(p.id) ? '<span class="text-[10px] text-emerald-400 font-bold block mb-2">COMPRADO / ALCANÇADO</span>' : ''}
+                    <h4 class="font-black text-white text-lg mb-1"><i class="fa-solid ${p.icon} text-emerald-500 mr-2"></i>${p.name}</h4>
+                    <p class="text-xs text-slate-400 mb-4 h-10">${p.desc}</p>
+                    <button ${hasPol(p.id)?'disabled':''} onclick="buyPolitician('${p.id}',${p.cost})" class="w-full ${hasPol(p.id)?'bg-emerald-900/50 text-emerald-500':'bg-slate-800 text-white hover:bg-slate-700'} py-2 rounded-lg text-sm font-bold shadow-inner">${hasPol(p.id)?'Ativo':p.cost+' Pontos de Legado'}</button>
+                </div>`).join('');
+                
+            document.getElementById('megaprojects-list').innerHTML = MEGAPROJECTS.map(p => `
+                <div class="glass-panel p-5 rounded-2xl border ${state.player.megaprojects.includes(p.id)?'border-cyan-500 bg-cyan-900/10':'border-slate-700 bg-slate-900'}">
+                    <h4 class="font-black text-white text-lg mb-1"><i class="fa-solid ${p.icon} text-cyan-500 mr-2"></i>${p.name}</h4>
+                    <p class="text-xs text-cyan-200/50 mb-4 font-bold">+${p.legacy} Pontos de Legado</p>
+                    <button ${state.player.megaprojects.includes(p.id)?'disabled':''} onclick="buyPwr('mega','${p.id}',${p.cost},${p.legacy})" class="w-full ${state.player.megaprojects.includes(p.id)?'bg-cyan-900/50 text-cyan-500':'bg-slate-800 text-white hover:bg-slate-700'} py-2 rounded-lg text-sm font-bold shadow-inner">${state.player.megaprojects.includes(p.id)?'Concluído':fmt.format(p.cost)}</button>
+                </div>`).join('');
+                
+            document.getElementById('rivals-list').innerHTML = state.rivals.map(r => `
+                <div class="glass-panel p-5 rounded-2xl border border-rose-900/50 bg-gradient-to-b from-slate-900 to-rose-950/20">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-rose-900/30 flex items-center justify-center text-rose-500 text-xl border border-rose-800"><i class="fa-solid fa-user-tie"></i></div>
+                        <div><h4 class="font-black text-white text-lg leading-tight">${r.name}</h4><p class="text-sm font-mono font-bold text-emerald-400">${fmt.format(r.nw)}</p></div>
+                    </div>
+                    <div class="bg-slate-950 p-3 rounded-lg border border-rose-900/30 mb-4">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase mb-2">Empresas do Rival:</p>
+                        ${r.companies.length > 0 ? r.companies.map(c => `<div class="flex justify-between items-center text-xs border-b border-slate-800/50 pb-2 mb-2"><span class="text-slate-300 font-bold">${c.name}</span><div class="flex gap-2 items-center"><span class="text-emerald-400 font-mono">${fmt.format(c.val)}</span><button onclick="openRivalOffer('${r.id}','${c.id}')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2 py-1 rounded text-[10px] font-bold">Comprar</button></div></div>`).join('') : '<p class="text-xs text-slate-500">Falido. Nenhuma empresa no momento.</p>'}
+                    </div>
+                    <button onclick="directSabotage('${r.id}')" class="w-full bg-rose-900/50 hover:bg-rose-800 border border-rose-700 text-rose-300 py-2 rounded-lg text-sm font-bold transition-colors shadow-inner flex items-center justify-center gap-2"><i class="fa-solid fa-mask"></i> Sabotar Rival (R$ 500k)</button>
+                </div>`).join('');
+        }
+
+        function buyPwr(t, id, cost, leg) {
+            if(!checkBalance(cost)) return; state.cash -= cost; state.player.legacy += leg;
+            state.player.megaprojects.push(id); logTx(`Megaprojeto: ${id}`, -cost); updateUI();
+        }
+
+        function openRivalOffer(rivalId, compId) {
+            state.pendingRivalId = rivalId;
+            state.pendingRivalCompId = compId;
+            let r = state.rivals.find(x => x.id === rivalId);
+            let c = r.companies.find(x => x.id === compId);
+            
+            document.getElementById('rival-offer-comp-name').textContent = `Alvo: ${c.name} (Dono: ${r.name})`;
+            document.getElementById('rival-offer-val').textContent = `Valor de Mercado: ${fmt.format(c.val)}`;
+            document.getElementById('modal-rival-offer').classList.remove('hidden');
+        }
+
+        function submitRivalOffer() {
+            let p = Number(document.getElementById('input-rival-offer').value);
+            if(!p || p <= 0) return;
+            if(!checkBalance(p)) return;
+            
+            let r = state.rivals.find(x => x.id === state.pendingRivalId);
+            let c = r.companies.find(x => x.id === state.pendingRivalCompId);
+            
+            let minAccept = c.val * (1.3 + (Math.random() * 0.2)); 
+            
+            if (p >= minAccept) {
+                state.cash -= p;
+                logTx(`Aquisição Hostil de Rival: ${c.name}`, -p);
+                
+                r.companies = r.companies.filter(x => x.id !== c.id);
+                r.nw += p; 
+                
+                state.companies.push({
+                    id: Date.now().toString(), name: c.name, propertyId: null, sector: 'industria', invested: 0, ownership: 100, openForSale: true,
+                    workers: Math.floor(c.val / 100000), managers: Math.floor(c.val / 300000), profit: c.val * 0.05, valuation: c.val, focus: 'padrao', upgrades: { tech: 2, mkt: 2 }
+                });
+                
+                showToast('AQUISIÇÃO SUCESSO', `${r.name} cedeu à sua oferta!`, 'success');
+                addNews('BOOM', `Gigante ${c.name} vendida em manobra hostil bilionária!`);
+            } else {
+                showToast('Oferta Recusada', `${r.name} achou inaceitável e encerrou a reunião.`, 'danger');
+            }
+            
+            document.getElementById('modal-rival-offer').classList.add('hidden');
+            updateUI();
+        }
+
+        // --- STREAMING_CHUNK:Motor de Inteligência Artificial e Passagem de Tempo ---
+        function checkAIProposals() {
+            if(state.companies.length === 0) return;
+            
+            if(Math.random() < 0.1) {
+                let trg = state.companies[Math.floor(Math.random()*state.companies.length)];
+                
+                if(trg.profit > 5000) { 
+                    let valuation = (trg.valuation * (trg.ownership/100));
+                    let offerMult = 1.0 + (Math.random() * 0.8);
+                    let val = valuation * offerMult;
+                    
+                    let isClosed = trg.openForSale === false;
+                    if(isClosed && offerMult < 1.50) return; 
+                    
+                    state.inboxOffers.push({ id: Date.now().toString(), compId: trg.id, compName: trg.name, val: val, max: val*1.3, neg: false, expires: 12 });
+                    
+                    if (isClosed && offerMult >= 1.50) {
+                        showToast('OFERTA IRRECUSÁVEL!', `A ${trg.name} estava fechada para venda, mas um fundo ofereceu um prêmio absurdo de +${((offerMult-1)*100).toFixed(0)}%!`, 'warning');
+                        addNews('OPORTUNIDADE', `Oferta monstruosa fura o bloqueio de venda pela ${trg.name}!`);
+                    } else {
+                        showToast('Nova Oferta M&A Recebida', `Um fundo quer comprar a ${trg.name}. Veja na aba Empresas.`, 'info');
+                        addNews('OPORTUNIDADE', `Fundo internacional lança oferta pela ${trg.name}!`);
+                    }
+                    
+                    updateUI();
+                }
+            }
+        }
+
+        function toggleTime() {
+            if(state.autoPlay) { clearInterval(state.autoPlay); state.autoPlay = null; document.getElementById('btn-autoplay').innerHTML = '<i class="fa-solid fa-play"></i> Auto'; }
+            else { state.autoPlay = setInterval(advanceMonth, 2500); document.getElementById('btn-autoplay').innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; }
+        }
+
+        function advanceMonth() {
+            state.turn++;
+            
+            if(state.economy.eraTime > 0) {
+                state.economy.eraTime--;
+                if(state.economy.eraTime <= 0) { 
+                    state.economy.era = 'estabilidade'; 
+                    state.economy.cooldown = 18 + Math.floor(Math.random()*18);
+                    addNews('MUNDO', 'A economia global entra em um período de estabilidade.'); 
+                    showToast('Fim do Ciclo', 'O mercado se acalmou.', 'info');
+                }
+            } else if (state.economy.cooldown > 0) {
+                state.economy.cooldown--;
+            } else {
+                if (Math.random() < 0.03) { 
+                    let r = Math.random();
+                    if(r < 0.45) { 
+                        state.economy.era = 'boom'; state.economy.eraTime = 12 + Math.floor(Math.random()*12); 
+                        addNews('BOOM', 'Crescimento eufórico nos mercados!'); showToast('BOOM ECONÔMICO', 'Lucre agora!', 'success'); 
+                    } else if(r < 0.90) { 
+                        state.economy.era = 'recessao'; state.economy.eraTime = 18 + Math.floor(Math.random()*12); 
+                        addNews('CRISE', 'Recessão atinge os mercados em cheio.'); showToast('RECESSÃO', 'Inverno econômico!', 'danger'); 
+                    } else { 
+                        state.economy.era = 'pandemia'; state.economy.eraTime = 8 + Math.floor(Math.random()*6); 
+                        addNews('CRISE', 'Colapso total da cadeia de suprimentos!'); showToast('CISNE NEGRO', 'Colapso total de demanda!', 'danger'); 
+                    }
+                }
+            }
+
+            let b = state.economy.era === 'boom' ? 1.4 : (state.economy.era === 'recessao' ? 0.6 : (state.economy.era === 'pandemia' ? 0.3 : 1.0));
+            Object.keys(state.economy.demands).forEach(k => state.economy.demands[k] = Math.max(0.1, (Math.random()*0.4 + 0.8) * b));
+            state.b3.forEach(s => { s.price = Math.max(0.5, s.price * (1 + (Math.random()*0.15 - 0.07) * b)); s.cap = s.price * 100000; });
+            
+            state.rivals.forEach(r => {
+                r.companies.forEach(c => c.val *= (1 + (Math.random()*0.06 - 0.02) * b * r.aggr));
+                if(Math.random() < 0.01 && r.nw > 1000000) { 
+                    r.companies.push({id: 'rc_'+Date.now()+Math.random(), name: 'Nova Holding S.A', val: r.nw * 0.05}); 
+                }
+                r.nw = r.companies.reduce((sum, c) => sum + c.val, 0); 
+            });
+
+            calcFinances();
+            
+            state.companies.forEach(c => { state.cash += (c.profit * (c.ownership / 100)); });
+            state.cash += state.bank.cdb * 0.015;
+            state.cash -= state.bank.loan * (hasPol('senador') ? 0 : (state.economy.era==='recessao'? 0.08 : 0.05));
+            if(!hasPol('deputado')) state.cash -= LIFESTYLES.find(l=>l.id===state.player.lifestyle).cost;
+            state.ownedProperties.filter(p=>!state.companies.some(c=>c.propertyId===p.id) && !p.rented).forEach(p => { if(!hasPol('deputado')) state.cash -= p.maint; });
+            state.ownedProperties.filter(p=>p.rented).forEach(p => state.cash += p.basePrice*COSTS.rentFee);
+            
+            if(state.turn % 12 === 0 && !hasPol('presidente')) {
+                let lucroAnual = state.companies.reduce((a,c)=>a+(c.profit>0?c.profit*(c.ownership/100):0),0) * 12;
+                let ir = lucroAnual * 0.15;
+                if(ir > 0) { state.cash -= ir; logTx('Leão (IR Anual 15%)', -ir); }
+                let igf = (state.netWorth > 500000000) ? state.netWorth * 0.03 : 0; 
+                if(igf > 0) { state.cash -= igf; logTx('IGF (3%)', -igf); showToast('Taxação Severa', 'Imposto sobre Grandes Fortunas Pago.', 'warning');}
+            }
+            
+            if(Math.random() < 0.1 && state.vcOffers.length < 3) {
+                let areas = ['Tech', 'Bio', 'Fintech', 'Agrotech'];
+                state.vcOffers.push({ id: Date.now().toString(), name: `Startup ${areas[Math.floor(Math.random()*areas.length)]} ${Math.floor(Math.random()*1000)}`, req: 50000 + (Math.random() * 200000), equity: 10 + Math.floor(Math.random()*15) });
+            }
+            state.myVCs.forEach(vc => {
+                if(vc.status !== 'active') return;
+                vc.age++;
+                if(Math.random() < 0.03) { vc.status = 'failed'; showToast('Startup Faliu', `Sua investida ${vc.name} fechou as portas.`, 'danger'); }
+                else if(vc.age > 6 && Math.random() < 0.02) { 
+                    vc.status = 'sold'; let payout = vc.req * (5 + Math.random()*15); state.cash += payout;
+                    logTx(`Exit Startup: ${vc.name}`, payout); showToast('UNICÓRNIO!', `${vc.name} foi comprada! Retorno astronômico!`, 'success'); addNews('BOOM', `Startup investida vira unicórnio!`);
+                } else if (Math.random() < 0.15) { state.cash += vc.req * 0.02; } 
+            });
+
+            checkAIProposals();
+            state.inboxOffers.forEach(o => o.expires--); state.inboxOffers = state.inboxOffers.filter(o => o.expires > 0);
+            
+            if(state.cash < 0 && state.autoPlay) { showToast('FALÊNCIA IMINENTE', 'Caixa negativo! Jogo pausado.', 'danger'); toggleTime(); }
+            updateUI();
+        }
+
+        window.onload = () => { updateFNTargets(); updateUI(); addNews('MUNDO', 'Bem-vindo ao Tycoon 5.0 - O Terminal Definitivo.'); };
+    </script>
+</body>
+</html>
