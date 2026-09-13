@@ -41,6 +41,10 @@
                         <label class="block text-xs font-bold text-sky-400 uppercase mb-1">Nome do Personagem</label>
                         <input id="login-char" type="text" placeholder="Ex: Sr. Wayne" class="w-full bg-slate-900 border border-sky-900/50 rounded-xl p-3 text-white outline-none focus:border-sky-500">
                     </div>
+                    <div>
+                        <label class="block text-xs font-bold text-sky-400 uppercase mb-1">Idade inicial (18+)</label>
+                        <input id="login-age" type="number" min="18" max="80" value="22" class="w-full bg-slate-900 border border-sky-900/50 rounded-xl p-3 text-white outline-none focus:border-sky-500">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Usuário / ID da Conta</label>
@@ -210,7 +214,7 @@
 
             <section id="tab-vida" class="tab-content space-y-6">
                 <div><h2 class="text-3xl font-black tracking-tight"><i class="fa-solid fa-heart-pulse mr-2 text-rose-400"></i>Minha Vida</h2><p class="text-slate-400 text-sm">Seu império também depende da sua saúde, relações e escolhas pessoais.</p></div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Saúde</p><p id="life-health" class="text-2xl font-black text-emerald-400">80/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Estresse</p><p id="life-stress" class="text-2xl font-black text-amber-400">20/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Educação</p><p id="life-education" class="text-2xl font-black text-sky-400">Básica</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Idade</p><p id="life-age" class="text-2xl font-black text-white">30 anos</p></div></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Saúde</p><p id="life-health" class="text-2xl font-black text-emerald-400">80/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Estresse</p><p id="life-stress" class="text-2xl font-black text-amber-400">20/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Educação</p><p id="life-education" class="text-2xl font-black text-sky-400">Básica</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Idade</p><p id="life-age" class="text-2xl font-black text-white">22 anos</p></div></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><button onclick="lifeAction('study')" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Estudar (R$5 mil)</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button></div></div>
                 <div class="glass-panel p-6 rounded-2xl border border-indigo-500/20"><h3 class="font-black text-white mb-4">Qualidade de vida e patrimônio pessoal</h3><div id="life-assets" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div></div>
             </section>
@@ -841,7 +845,7 @@
             world: { lastEventTurn: 0, activeEvent: null, eventHistory: [], timeline: [], pendingConsequences: [], marketConfidence: 50, globalNewsTurn: 0, rivalRelations: {} },
             vcOffers: [], myVCs: [], marketCompanies: [],
             activeLaws: [], pendingLaw: null, lawVotes: { yes: 0, no: 0 }, taxes: { pending: 0, deadline: 0 },
-            player: { name: 'Mister Tycoon', lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null, age: 30, health: 80, stress: 20, education: 'basica', educationLevel: 0, traits: ['ambicioso'], relationships: { family: 60, partner: 40, friends: 50 }, family: { partner: 'Sem parceiro', children: 0, heir: null }, assets: { home: 0, car: 0, yacht: 0, plane: 0 }, succession: null },
+            player: { name: 'Mister Tycoon', lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null, age: 22, health: 80, stress: 20, education: 'basica', educationLevel: 0, traits: ['ambicioso'], relationships: { family: 60, partner: 40, friends: 50 }, family: { partner: 'Sem parceiro', children: 0, heir: null }, assets: { home: 0, car: 0, yacht: 0, plane: 0 }, succession: null },
             smartcity: { unlocked: false, pop: 0, happy: 100, tax: 0.10, zRes: 0, zCom: 0, zInd: 0, bParks: 0, bPolice: 0, bInfra: 1, policies: [], mega: [] },
             futebol: {
                 championship: { season: 1, month: 1 },
@@ -994,7 +998,7 @@
         const EDUCATION_LABELS = ['Básica', 'Técnica', 'Superior', 'Pós-graduação'];
         function ensureLifeState() {
             const p = state.player || (state.player = {});
-            if(!Number.isFinite(p.age)) p.age = 30; if(!Number.isFinite(p.health)) p.health = 80; if(!Number.isFinite(p.stress)) p.stress = 20;
+            if(!Number.isFinite(p.age)) p.age = 22; if(!Number.isFinite(p.health)) p.health = 80; if(!Number.isFinite(p.stress)) p.stress = 20;
             if(!Number.isFinite(p.educationLevel)) p.educationLevel = 0; p.educationLevel = Math.max(0, Math.min(3, p.educationLevel));
             if(!p.education) p.education = ['basica','tecnica','superior','pos'][p.educationLevel] || 'basica';
             if(!p.relationships) p.relationships = { family: 60, partner: 40, friends: 50 };
@@ -1098,13 +1102,15 @@
             let u = document.getElementById('login-user').value.trim();
             let p = document.getElementById('login-pass').value.trim();
             let n = sanitizeText(document.getElementById('login-char').value) || sanitizeText(u, 40);
+            let requestedAge = Number(document.getElementById('login-age')?.value || 22);
+            if(!Number.isFinite(requestedAge) || requestedAge < 18 || requestedAge > 80) return showAuthError('Escolha uma idade entre 18 e 80 anos.');
             if(!u || !p) return showAuthError("Preencha usuário e senha para criar.");
             if (handleAdminMode(u, p)) return;
             
             if(LocalStorageWrapper.get('tycoon_save_' + u)) return showAuthError("Usuário já existe.");
             
             state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-            state.player.name = n; checkSquadsAndLeague();
+            state.player.name = n; state.player.age = Math.floor(requestedAge); checkSquadsAndLeague();
             currentUser = u; currentPass = p; manualSave();
             document.getElementById('login-overlay').classList.add('hidden'); updateUI();
         }
