@@ -77,6 +77,7 @@
         <div class="flex-1 overflow-y-auto py-4 px-3 flex flex-row md:flex-col gap-2 overflow-x-auto">
             <button onclick="switchTab('geral')" id="btn-tab-geral" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-bold text-sm bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 whitespace-nowrap"><i class="fa-solid fa-chart-pie w-5"></i> Visão Geral</button>
             <button onclick="switchTab('celular')" id="btn-tab-celular" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-mobile-screen w-5"></i> Smartphone</button>
+            <button onclick="switchTab('vida')" id="btn-tab-vida" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-rose-300 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-heart-pulse w-5"></i> Minha Vida</button>
             <button onclick="switchTab('financas')" id="btn-tab-financas" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-file-invoice-dollar w-5"></i> Contabilidade (DRE)</button>
             <button onclick="switchTab('empresas')" id="btn-tab-empresas" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-briefcase w-5"></i> Empresas & M&A</button>
             <button onclick="switchTab('imoveis')" id="btn-tab-imoveis" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left font-semibold text-sm text-slate-400 hover:bg-slate-800 whitespace-nowrap"><i class="fa-solid fa-city w-5"></i> Imóveis</button>
@@ -150,6 +151,14 @@
                     </div>
                     <div class="glass-panel p-6 rounded-2xl"><h3 class="text-lg font-black mb-4">Demanda Econômica Real</h3><div class="space-y-4" id="economy-indicators"></div></div>
                 </div>
+                <div class="glass-panel p-6 rounded-2xl border border-amber-500/20">
+                    <div class="flex items-center justify-between mb-4"><div><h3 class="text-lg font-black">Reputação do Império</h3><p class="text-xs text-slate-400">Suas decisões mudam como o mundo trata você.</p></div><span id="ui-market-confidence" class="text-xs font-bold text-amber-400"></span></div>
+                    <div id="reputation-panel" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-sky-500/20">
+                    <div class="flex items-center justify-between mb-4"><div><h3 class="text-lg font-black">Linha do tempo do mundo</h3><p class="text-xs text-slate-400">A história do universo continua mesmo quando você não age.</p></div><span id="ui-world-status" class="text-xs text-sky-400 font-bold"></span></div>
+                    <div id="world-timeline" class="space-y-2 max-h-64 overflow-y-auto"></div>
+                </div>
             </section>
 
             <section id="tab-celular" class="tab-content space-y-6">
@@ -197,6 +206,13 @@
                         </table>
                     </div>
                 </div>
+            </section>
+
+            <section id="tab-vida" class="tab-content space-y-6">
+                <div><h2 class="text-3xl font-black tracking-tight"><i class="fa-solid fa-heart-pulse mr-2 text-rose-400"></i>Minha Vida</h2><p class="text-slate-400 text-sm">Seu império também depende da sua saúde, relações e escolhas pessoais.</p></div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Saúde</p><p id="life-health" class="text-2xl font-black text-emerald-400">80/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Estresse</p><p id="life-stress" class="text-2xl font-black text-amber-400">20/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Educação</p><p id="life-education" class="text-2xl font-black text-sky-400">Básica</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Idade</p><p id="life-age" class="text-2xl font-black text-white">30 anos</p></div></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><button onclick="lifeAction('study')" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Estudar (R$5 mil)</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button></div></div>
+                <div class="glass-panel p-6 rounded-2xl border border-indigo-500/20"><h3 class="font-black text-white mb-4">Qualidade de vida e patrimônio pessoal</h3><div id="life-assets" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div></div>
             </section>
 
             <!-- ABA DE CONTABILIDADE (DRE) AGORA CORRIGIDA -->
@@ -521,11 +537,29 @@
                 <div>
                     <h2 class="text-3xl font-black text-fuchsia-400 tracking-tight flex items-center gap-2"><i class="fa-solid fa-clipboard-user"></i> Administração de Clubes</h2>
                     <p class="text-slate-400 text-sm">Gerencie o estádio, precificação, patrocínios e contrate craques dos rivais.</p>
+                    <button id="btn-football-interview" onclick="footballInterview()" class="hidden mt-3 bg-fuchsia-900/40 hover:bg-fuchsia-800/60 border border-fuchsia-600/60 text-fuchsia-200 px-4 py-2 rounded-lg text-xs font-bold"><i class="fa-solid fa-microphone-lines mr-2"></i>Dar entrevista (opcional)</button>
                 </div>
                 
                 <div class="mb-4">
                     <label class="block text-xs font-bold text-slate-400 uppercase mb-2">Selecione o Clube que você preside (>50%)</label>
                     <select id="fut-admin-select" onchange="renderFutAdmin()" class="w-full md:w-1/2 bg-slate-900 border border-slate-700 text-white rounded-xl p-3 font-bold outline-none focus:border-fuchsia-500"></select>
+                </div>
+
+                <div id="club-governance" class="hidden glass-panel p-5 rounded-2xl border border-fuchsia-500/20">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                        <div><label class="block text-xs text-slate-400 font-bold uppercase mb-2">Seu papel no clube</label><select id="club-role" onchange="setClubRole(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white"><option value="owner">Dono controlador</option><option value="owner_president">Dono e presidente</option><option value="owner_coach">Dono e técnico</option><option value="owner_all">Dono, presidente e técnico</option></select></div>
+                        <div><label class="block text-xs text-slate-400 font-bold uppercase mb-2">Perfil esportivo</label><select id="club-style" onchange="setClubStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-white"><option value="balanced">Equilibrado</option><option value="offensive">Ofensivo</option><option value="defensive">Defensivo</option><option value="youth">Base e jovens</option></select></div>
+                        <div class="bg-slate-950/70 rounded-lg p-3"><p class="text-[10px] text-slate-500 uppercase font-bold">Conselho</p><p id="club-board-confidence" class="text-2xl font-black text-emerald-400">50/100</p></div>
+                        <div class="bg-slate-950/70 rounded-lg p-3"><p class="text-[10px] text-slate-500 uppercase font-bold">Torcida</p><p id="club-fan-confidence" class="text-2xl font-black text-amber-400">50/100</p></div>
+                        <div class="bg-slate-950/70 rounded-lg p-3"><p class="text-[10px] text-slate-500 uppercase font-bold">Patrocinador principal</p><p id="club-sponsor-name" class="text-sm font-bold text-amber-400">Sem contrato</p><p id="club-sponsor-value" class="text-xs text-slate-400"></p></div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-4"><button onclick="clubAction('dividend')" class="bg-amber-900/50 hover:bg-amber-800 text-amber-200 border border-amber-700 px-3 py-2 rounded-lg text-xs font-bold">Pagar dividendos</button><button onclick="clubAction('academy')" class="bg-sky-900/50 hover:bg-sky-800 text-sky-200 border border-sky-700 px-3 py-2 rounded-lg text-xs font-bold">Investir na base (R$10Mi)</button><button onclick="clubAction('sponsor')" class="bg-emerald-900/50 hover:bg-emerald-800 text-emerald-200 border border-emerald-700 px-3 py-2 rounded-lg text-xs font-bold">Negociar patrocínio</button></div>
+                    <p id="club-role-hint" class="text-xs text-slate-400 mt-3"></p>
+                </div>
+
+                <div id="club-live-panels" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl border border-emerald-500/20"><div class="flex justify-between items-center mb-3"><h3 class="font-black text-white"><i class="fa-solid fa-trophy text-amber-400 mr-2"></i>Match Center</h3><span id="club-season-status" class="text-xs text-slate-400"></span></div><div id="club-match-center" class="space-y-2"><p class="text-xs text-slate-500">Aguardando a próxima rodada.</p></div></div>
+                    <div class="glass-panel p-5 rounded-2xl border border-sky-500/20"><div class="flex justify-between items-center mb-3"><h3 class="font-black text-white"><i class="fa-solid fa-arrows-rotate text-sky-400 mr-2"></i>Rumores e mercado</h3><button onclick="refreshTransferRumors()" class="text-[10px] bg-sky-900/50 border border-sky-700 text-sky-200 px-2 py-1 rounded">Atualizar</button></div><div id="club-transfer-list" class="space-y-2"><p class="text-xs text-slate-500">Nenhum rumor confirmado.</p></div></div>
                 </div>
 
                 <div id="fut-admin-panel" class="hidden space-y-6">
@@ -718,6 +752,13 @@
         </div>
     </div>
 
+    <div id="world-event-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm hidden flex items-center justify-center z-[180] p-4">
+        <div class="glass-panel max-w-lg w-full rounded-2xl border border-amber-500/40 shadow-2xl p-6">
+            <div class="flex items-center gap-3 mb-3"><span class="text-amber-400 text-2xl"><i class="fa-solid fa-earth-americas"></i></span><div><p class="text-[10px] uppercase tracking-widest text-amber-400 font-black">Acontecimento do mundo</p><h3 id="world-event-title" class="text-2xl font-black text-white"></h3></div></div>
+            <p id="world-event-description" class="text-slate-300 text-sm leading-relaxed mb-5"></p>
+            <div id="world-event-choices" class="space-y-2"></div>
+        </div>
+    </div>
     <div id="toast-container" class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
     <script>
@@ -770,6 +811,14 @@
             };
         }
 
+        function generateMarketCompany() {
+            const sectors = ['tecnologia', 'varejo', 'industria', 'rural', 'servicos'];
+            const names = ['Nexus', 'Aurora', 'Atlas', 'Vértice', 'Órbita'];
+            const sector = sectors[Math.floor(Math.random() * sectors.length)];
+            const valuation = 1000000 + Math.floor(Math.random() * 9000000);
+            return { id: 'mc_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7), name: names[Math.floor(Math.random() * names.length)] + ' ' + sector.toUpperCase(), sector, valuation, asking: Math.floor(valuation * (1.05 + Math.random() * 0.45)) };
+        }
+
         const PROP_TYPES = [
             { type: 'lote', name: 'Lote', cap: 5, price: 15000, maint: 200 },
             { type: 'loja', name: 'Loja', cap: 15, price: 80000, maint: 2500 },
@@ -788,9 +837,11 @@
         let DEFAULT_STATE = {
             cash: 50000, turn: 1, netWorth: 50000, autoPlay: null, inflationMult: 1.0,
             companies: [], ownedProperties: [], bank: { cdb: 0, loan: 0 }, statement: [], news: [],
+            reputation: { consumers: 50, employees: 50, government: 50, media: 50, investors: 50, fans: 50 },
+            world: { lastEventTurn: 0, activeEvent: null, eventHistory: [], timeline: [], pendingConsequences: [], marketConfidence: 50, globalNewsTurn: 0, rivalRelations: {} },
             vcOffers: [], myVCs: [], marketCompanies: [],
             activeLaws: [], pendingLaw: null, lawVotes: { yes: 0, no: 0 }, taxes: { pending: 0, deadline: 0 },
-            player: { name: 'Mister Tycoon', lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null },
+            player: { name: 'Mister Tycoon', lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null, age: 30, health: 80, stress: 20, education: 'basica', educationLevel: 0, traits: ['ambicioso'], relationships: { family: 60, partner: 40, friends: 50 }, family: { partner: 'Sem parceiro', children: 0, heir: null }, assets: { home: 0, car: 0, yacht: 0, plane: 0 }, succession: null },
             smartcity: { unlocked: false, pop: 0, happy: 100, tax: 0.10, zRes: 0, zCom: 0, zInd: 0, bParks: 0, bPolice: 0, bInfra: 1, policies: [], mega: [] },
             futebol: {
                 championship: { season: 1, month: 1 },
@@ -923,7 +974,40 @@
             }
         };
 
+        // Keep saves compatible as the game grows and prevent user-entered text
+        // from being interpreted as HTML when rendered in dynamic panels.
+        function mergeState(saved) {
+            const clone = value => JSON.parse(JSON.stringify(value));
+            const merge = (base, incoming) => {
+                if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) return incoming === undefined ? clone(base) : incoming;
+                const out = (base && typeof base === 'object' && !Array.isArray(base)) ? clone(base) : {};
+                Object.keys(incoming).forEach(k => { out[k] = (incoming[k] && typeof incoming[k] === 'object' && !Array.isArray(incoming[k])) ? merge(out[k], incoming[k]) : incoming[k]; });
+                return out;
+            };
+            return merge(DEFAULT_STATE, saved || {});
+        }
+        function esc(value) {
+            return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function sanitizeText(value, max = 80) { return String(value ?? '').replace(/[<>"']/g, '').trim().slice(0, max); }
+
+        const EDUCATION_LABELS = ['Básica', 'Técnica', 'Superior', 'Pós-graduação'];
+        function ensureLifeState() {
+            const p = state.player || (state.player = {});
+            if(!Number.isFinite(p.age)) p.age = 30; if(!Number.isFinite(p.health)) p.health = 80; if(!Number.isFinite(p.stress)) p.stress = 20;
+            if(!Number.isFinite(p.educationLevel)) p.educationLevel = 0; p.educationLevel = Math.max(0, Math.min(3, p.educationLevel));
+            if(!p.education) p.education = ['basica','tecnica','superior','pos'][p.educationLevel] || 'basica';
+            if(!p.relationships) p.relationships = { family: 60, partner: 40, friends: 50 };
+            ['family','partner','friends'].forEach(k => { if(!Number.isFinite(p.relationships[k])) p.relationships[k] = 50; p.relationships[k] = Math.max(0, Math.min(100, p.relationships[k])); });
+            if(!p.family) p.family = { partner: 'Sem parceiro', children: 0, heir: null }; if(!Number.isFinite(p.family.children)) p.family.children = 0;
+            if(!p.assets) p.assets = { home: 0, car: 0, yacht: 0, plane: 0 }; ['home','car','yacht','plane'].forEach(k => { if(!Number.isFinite(p.assets[k])) p.assets[k] = 0; });
+            p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress));
+        }
+        function ensureBusinessState() { state.companies.forEach(c => { if(!Number.isFinite(c.tech)) c.tech = c.upgrades?.tech || 0; if(!Number.isFinite(c.brand)) c.brand = 0; if(!Number.isFinite(c.supplyHealth)) c.supplyHealth = 85; if(!Number.isFinite(c.rdProgress)) c.rdProgress = 0; }); }
+
         function checkSquadsAndLeague() {
+            ensureWorldState();
+            ensureLifeState(); ensureBusinessState();
             if(!state.futebol.championship) state.futebol.championship = { season: 1, month: 1 };
             if(!state.taxes) state.taxes = { pending: 0, deadline: 0 };
             
@@ -951,7 +1035,18 @@
                 if(c.pts === undefined) c.pts = 0; if(c.gf === undefined) c.gf = 0; if(c.gc === undefined) c.gc = 0;
                 if(c.titles === undefined) c.titles = 0;
                 if(!c.fin) c.fin = { tickets: 0, merch: 0, tv: 0, sal: 0, maint: 0 };
+                if(!c.governance) c.governance = { role: 'owner', style: 'balanced', board: 50, fanConfidence: 50, sponsor: { name: 'Sem contrato', value: 0, months: 0 }, manager: { name: 'Carlos Andrade', quality: 70, salary: 250000, months: 24 }, dividendsPaid: 0, academyLevel: 0, rumors: [], matches: [], fanGroups: { organized: 50, families: 50, ultras: 50 } };
+                if(!c.governance.style) c.governance.style = 'balanced';
+                if(!Number.isFinite(c.governance.academyLevel)) c.governance.academyLevel = 0;
+                if(!Array.isArray(c.governance.rumors)) c.governance.rumors = [];
+                if(!Array.isArray(c.governance.matches)) c.governance.matches = [];
+                if(!c.governance.fanGroups) c.governance.fanGroups = { organized: 50, families: 50, ultras: 50 };
+                if(!c.governance.sponsor) c.governance.sponsor = { name: 'Sem contrato', value: 0, months: 0 };
+                if(!c.governance.manager) c.governance.manager = { name: 'Carlos Andrade', quality: 70, salary: 250000, months: 24 };
+                if(!Number.isFinite(c.governance.board)) c.governance.board = 50;
+                if(!Number.isFinite(c.governance.fanConfidence)) c.governance.fanConfidence = 50;
                 while(c.players.length < 16) { c.players.push(generatePlayer(c.ovr || 75)); }
+                c.players.forEach(p => { if(!Number.isFinite(p.morale)) p.morale = 70; if(!Number.isFinite(p.form)) p.form = 0; if(!Number.isFinite(p.injury)) p.injury = 0; });
             });
         }
 
@@ -990,7 +1085,7 @@
             try {
                 let parsed = JSON.parse(data);
                 if(parsed.password !== p) return showAuthError("Senha incorreta!");
-                state = { ...JSON.parse(JSON.stringify(DEFAULT_STATE)), ...parsed.state };
+                state = mergeState(parsed.state);
                 if(!state.player.name) state.player.name = u;
                 checkSquadsAndLeague();
                 currentUser = u; currentPass = p;
@@ -1002,7 +1097,7 @@
         function doRegister() {
             let u = document.getElementById('login-user').value.trim();
             let p = document.getElementById('login-pass').value.trim();
-            let n = document.getElementById('login-char').value.trim() || u;
+            let n = sanitizeText(document.getElementById('login-char').value) || sanitizeText(u, 40);
             if(!u || !p) return showAuthError("Preencha usuário e senha para criar.");
             if (handleAdminMode(u, p)) return;
             
@@ -1054,6 +1149,145 @@
 
         function logTx(desc, val) { state.statement.unshift({ m: state.turn, desc, val }); if(state.statement.length > 50) state.statement.pop(); }
         function addNews(type, title) { state.news.unshift({ type, title }); if(state.news.length > 20) state.news.pop(); }
+        const REP_LABELS = { consumers: 'Consumidores', employees: 'Funcionários', government: 'Governo', media: 'Imprensa', investors: 'Investidores', fans: 'Torcedores' };
+        const WORLD_EVENTS = [
+            { id: 'local_opportunity', condition: () => state.companies.length === 0, title: 'O mercado abriu uma janela', description: 'Uma associação comercial anunciou um programa local para novos empreendedores. Ainda não há nenhuma empresa sua para ser afetada.', choices: [
+                { label: 'Participar do programa', cost: 15000, effects: { investors: 5, government: 3, media: 2 }, result: 'Você entrou no radar de investidores locais e recebeu acesso a fornecedores.' },
+                { label: 'Estudar o mercado primeiro', effects: { investors: 2 }, result: 'Você preferiu observar os preços e ganhou uma leitura melhor do mercado.' },
+                { label: 'Ignorar a oportunidade', effects: {}, result: 'O programa seguiu sem você. Outras empresas ocuparão esse espaço.' }
+            ]},
+            { id: 'supplier_crisis', condition: () => state.companies.length > 0, title: 'Crise na cadeia de fornecedores', description: 'Um fornecedor estratégico foi acusado de fraude e a imprensa está pressionando seu grupo por uma resposta.', choices: [
+                { label: 'Romper contrato e auditar', cost: 2000000, effects: { media: 8, government: 5, investors: 3 }, result: 'O grupo abriu os livros e recuperou a confiança do mercado.' },
+                { label: 'Manter o fornecedor em silêncio', effects: { media: -12, government: -8, investors: -6 }, result: 'A decisão economizou caixa, mas o silêncio virou manchete.' },
+                { label: 'Criar programa de conformidade', cost: 5000000, effects: { media: 15, employees: 5, consumers: 8 }, result: 'O investimento em conformidade melhorou a imagem do grupo.' }
+            ]},
+            { id: 'strike', condition: () => state.companies.some(c => c.workers > 0), title: 'Greve ameaça a operação', description: 'Funcionários de uma de suas empresas pararam as máquinas pedindo melhores condições e participação nos resultados.', choices: [
+                { label: 'Negociar e reajustar salários', cost: 1500000, effects: { employees: 15, media: 5, investors: -3 }, result: 'O acordo encerrou a greve e reduziu a tensão interna.' },
+                { label: 'Substituir os grevistas', cost: 500000, effects: { employees: -18, media: -12, consumers: -5 }, result: 'A operação voltou, mas a reação pública foi imediata.' },
+                { label: 'Esperar a greve passar', effects: { employees: -8, media: -6 }, result: 'A paralisação terminou, deixando uma cicatriz na cultura da empresa.' }
+            ]},
+            { id: 'audit', condition: () => state.companies.length > 0 || state.ownedProperties.length > 0, title: 'Fiscalização extraordinária', description: 'O governo iniciou uma auditoria no seu grupo. Transparência pode custar caro agora, mas evita uma crise maior.', choices: [
+                { label: 'Cooperar totalmente', cost: 800000, effects: { government: 12, media: 8, investors: 4 }, result: 'A auditoria terminou sem punições relevantes.' },
+                { label: 'Contratar defesa agressiva', cost: 2500000, effects: { government: -3, investors: 3 }, result: 'Os advogados reduziram a exposição, mas a imprensa questionou sua postura.' },
+                { label: 'Obstruir a investigação', effects: { government: -25, media: -18, investors: -12 }, result: 'A investigação foi ampliada e seu grupo passou a ser tratado como de alto risco.' }
+            ]},
+            { id: 'viral_offer', condition: () => state.companies.length > 0, title: 'Oferta viraliza nas redes', description: 'Uma campanha de uma empresa sua virou assunto nacional. Você pode aproveitar o momento ou preservar a margem.', choices: [
+                { label: 'Investir em distribuição', cost: 400000, effects: { consumers: 12, media: 7, investors: 3 }, result: 'A campanha conquistou novos consumidores e elevou a demanda.' },
+                { label: 'Manter a oferta com margem alta', effects: { consumers: -5, investors: 5 }, result: 'O caixa agradeceu, mas parte do público se sentiu enganada.' },
+                { label: 'Doar parte do lucro', cost: 1000000, effects: { consumers: 15, media: 15, government: 3 }, result: 'A ação social transformou a campanha em um símbolo positivo.' }
+            ]},
+            { id: 'fan_protest', title: 'Torcedores protestam', description: 'A torcida do clube controlado pelo seu grupo protesta contra os preços e a falta de ambição esportiva.', condition: () => state.futebol.clubes.some(c => c.shares >= 50), choices: [
+                { label: 'Reduzir ingressos e reforçar o elenco', cost: 12000000, effects: { fans: 18, media: 6, investors: -4 }, result: 'A torcida voltou a apoiar o projeto e os jogos ficaram lotados.' },
+                { label: 'Ignorar os protestos', effects: { fans: -18, media: -10 }, result: 'Os protestos cresceram e os patrocinadores começaram a questionar o clube.' },
+                { label: 'Comunicar um plano esportivo', cost: 500000, effects: { fans: 8, media: 8 }, result: 'A transparência acalmou parte da torcida.' }
+            ]}
+        ];
+        function ensureWorldState() {
+            if(!state.reputation) state.reputation = { consumers: 50, employees: 50, government: 50, media: 50, investors: 50, fans: 50 };
+            Object.keys(REP_LABELS).forEach(k => { if(!Number.isFinite(state.reputation[k])) state.reputation[k] = 50; state.reputation[k] = Math.max(0, Math.min(100, state.reputation[k])); });
+            if(!state.world) state.world = { lastEventTurn: 0, activeEvent: null, eventHistory: [], timeline: [], pendingConsequences: [], marketConfidence: 50, globalNewsTurn: 0, rivalRelations: {} };
+            if(!Array.isArray(state.world.eventHistory)) state.world.eventHistory = [];
+            if(!Array.isArray(state.world.timeline)) state.world.timeline = [];
+            if(!Array.isArray(state.world.pendingConsequences)) state.world.pendingConsequences = [];
+            if(!state.world.rivalRelations || typeof state.world.rivalRelations !== 'object') state.world.rivalRelations = {};
+            if(!Number.isFinite(state.world.marketConfidence)) state.world.marketConfidence = 50;
+        }
+        function changeRep(effects) {
+            ensureWorldState();
+            Object.entries(effects || {}).forEach(([k, delta]) => { if(k in state.reputation) state.reputation[k] = Math.max(0, Math.min(100, state.reputation[k] + delta)); });
+        }
+        const GLOBAL_NEWS = [
+            { type: 'MUNDO', text: 'Bancos centrais sinalizam mudanças nos juros; investidores revisam suas projeções.' },
+            { type: 'MUNDO', text: 'Uma nova tecnologia promete reduzir custos de logística em todo o país.' },
+            { type: 'MERCADO', text: 'Consumidores mudaram seus hábitos e setores inteiros estão se adaptando.' },
+            { type: 'MUNDO', text: 'Uma eleição regional alterou as prioridades de infraestrutura e investimentos.' },
+            { type: 'CRISE', text: 'Uma interrupção logística elevou o preço de insumos por algumas semanas.' },
+            { type: 'ESPORTE', text: 'Clubes anunciam uma disputa acirrada por talentos antes da próxima janela.' }
+        ];
+        function addTimeline(text, type = 'MUNDO') {
+            ensureWorldState(); state.world.timeline.unshift({ turn: state.turn, text: sanitizeText(text, 220), type }); state.world.timeline = state.world.timeline.slice(0, 60);
+        }
+        function scheduleConsequence(delay, text, effects = {}, cash = 0) {
+            ensureWorldState(); state.world.pendingConsequences.push({ due: state.turn + delay, text, effects, cash });
+        }
+        function processWorldConsequences() {
+            ensureWorldState();
+            const due = state.world.pendingConsequences.filter(c => c.due <= state.turn);
+            state.world.pendingConsequences = state.world.pendingConsequences.filter(c => c.due > state.turn);
+            due.forEach(c => { changeRep(c.effects); if(c.cash) { state.cash += c.cash; logTx('Consequência do mundo', c.cash); } addNews('MUNDO', c.text); });
+        }
+        function emitGlobalNews() {
+            ensureWorldState(); if(state.turn - state.world.globalNewsTurn < 2 || Math.random() > 0.38) return;
+            const item = GLOBAL_NEWS[Math.floor(Math.random() * GLOBAL_NEWS.length)]; state.world.globalNewsTurn = state.turn; addNews(item.type, item.text); addTimeline(item.text, item.type);
+            if(item.type === 'CRISE') { state.world.marketConfidence = Math.max(0, state.world.marketConfidence - 6); Object.keys(state.economy.demands).forEach(k => state.economy.demands[k] = Math.max(0.1, state.economy.demands[k] * 0.97)); }
+        }
+        function renderReputation() {
+            ensureWorldState();
+            const panel = document.getElementById('reputation-panel'); if(!panel) return;
+            panel.innerHTML = Object.entries(REP_LABELS).map(([key, label]) => { const value = Math.round(state.reputation[key]); const color = value >= 70 ? 'bg-emerald-500' : (value >= 40 ? 'bg-amber-500' : 'bg-rose-500'); return `<div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3"><div class="flex justify-between text-xs font-bold mb-2"><span class="text-slate-300">${label}</span><span class="text-white">${value}/100</span></div><div class="h-2 bg-slate-950 rounded-full overflow-hidden"><div class="h-full ${color} rounded-full transition-all" style="width:${value}%"></div></div></div>`; }).join('');
+            const confidence = Math.round(state.world.marketConfidence);
+            const el = document.getElementById('ui-market-confidence'); if(el) el.textContent = `Confiança do mercado: ${confidence}/100`;
+            const status = document.getElementById('ui-world-status'); if(status) status.textContent = `${state.world.pendingConsequences.length} consequência(s) em andamento`;
+            const timeline = document.getElementById('world-timeline'); if(timeline) timeline.innerHTML = (state.world.timeline || []).slice(0, 12).map(item => `<div class="flex gap-3 border-b border-slate-800/60 pb-2"><span class="text-[10px] text-slate-500 font-mono w-16 shrink-0">Mês ${item.turn}</span><span class="text-xs text-slate-300">${esc(item.text)}</span></div>`).join('') || '<p class="text-xs text-slate-500">O mundo ainda está começando a registrar sua história.</p>';
+        }
+        function renderWorldEvent() {
+            ensureWorldState(); const active = state.world.activeEvent; const modal = document.getElementById('world-event-modal');
+            if(!active) { modal.classList.add('hidden'); return; }
+            const event = WORLD_EVENTS.find(e => e.id === active.id); if(!event) { state.world.activeEvent = null; modal.classList.add('hidden'); return; }
+            document.getElementById('world-event-title').textContent = event.title; document.getElementById('world-event-description').textContent = event.description;
+            document.getElementById('world-event-choices').innerHTML = event.choices.map((choice, i) => `<button onclick="resolveWorldEvent(${i})" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 transition-colors"><span class="block text-white font-bold">${choice.label}</span><span class="text-xs text-slate-400">${choice.cost ? `Custo: ${fmt.format(choice.cost)} · ` : ''}${Object.entries(choice.effects).map(([k,v]) => `${REP_LABELS[k]} ${v > 0 ? '+' : ''}${v}`).join(' · ')}</span></button>`).join('');
+            modal.classList.remove('hidden');
+        }
+        function triggerWorldEvent() {
+            ensureWorldState(); if(state.world.activeEvent || state.turn - state.world.lastEventTurn < 3 || Math.random() > 0.24) return;
+            const eligible = WORLD_EVENTS.filter(e => !e.condition || e.condition()); if(!eligible.length) return;
+            const event = eligible[Math.floor(Math.random() * eligible.length)]; state.world.activeEvent = { id: event.id }; state.world.lastEventTurn = state.turn; if(state.autoPlay) toggleTime(); addNews('MUNDO', `${event.title}: o império de ${sanitizeText(state.player.name, 40)} precisa decidir.`); renderWorldEvent();
+        }
+        function resolveWorldEvent(choiceIndex) {
+            ensureWorldState(); const active = state.world.activeEvent; const event = WORLD_EVENTS.find(e => e.id === active?.id); const choice = event?.choices[choiceIndex];
+            if(!event || !choice) return; if(choice.cost && !checkBalance(choice.cost)) return;
+            if(choice.cost) { state.cash -= choice.cost; logTx(`Evento: ${event.title}`, -choice.cost); }
+            changeRep(choice.effects);
+            if(event.id === 'supplier_crisis' && choiceIndex === 0) scheduleConsequence(3, 'A auditoria do fornecedor revelou uma economia de custos para o seu grupo.', { investors: 4 }, 500000);
+            if(event.id === 'strike' && choiceIndex === 0) scheduleConsequence(4, 'O acordo trabalhista melhorou a produtividade, mas elevou a folha permanentemente.', { employees: 4 });
+            if(event.id === 'audit' && choiceIndex === 2) scheduleConsequence(2, 'A investigação foi ampliada e contratos públicos foram suspensos.', { government: -10, investors: -8 }, -1000000);
+            if(event.id === 'viral_offer' && choiceIndex === 0) scheduleConsequence(3, 'A campanha viral trouxe novos clientes para as empresas do grupo.', { consumers: 5 }, 750000);
+            if(event.id === 'fan_protest' && choiceIndex === 0) scheduleConsequence(5, 'A torcida voltou a lotar o estádio depois dos reforços.', { fans: 6 });
+            state.world.eventHistory.unshift({ turn: state.turn, event: event.id, choice: choiceIndex }); state.world.eventHistory = state.world.eventHistory.slice(0, 30); state.world.activeEvent = null; addNews('MUNDO', choice.result); document.getElementById('world-event-modal').classList.add('hidden'); updateUI(); manualSave();
+        }
+        function runWorldSimulation() {
+            ensureWorldState();
+            ensureLifeState(); ensureBusinessState();
+            processWorldConsequences();
+            emitGlobalNews();
+            const avgRep = Object.values(state.reputation).reduce((a,b) => a + b, 0) / 6;
+            state.world.marketConfidence = Math.max(0, Math.min(100, state.world.marketConfidence * 0.85 + avgRep * 0.15 + (state.economy.era === 'boom' ? 8 : state.economy.era === 'recessao' ? -10 : 0)));
+            state.companies.forEach(c => {
+                c.age = (c.age || 0) + 1;
+                c.supplyHealth = Math.max(20, Math.min(100, (c.supplyHealth || 85) + (Math.random() < 0.12 ? -10 : 1)));
+                if((c.tech || 0) > 0 && Math.random() < 0.35) c.rdProgress = ((c.rdProgress || 0) + 1) % 10;
+                if(c.supplyHealth < 40 && Math.random() < 0.25) { changeRep({ consumers: -2, employees: -1 }); addNews('CRISE', `A cadeia de suprimentos da ${c.name} sofreu um atraso.`); }
+            });
+            state.rivals.forEach(r => {
+                if(Math.random() < 0.18 && r.companies.length) { const target = r.companies[Math.floor(Math.random() * r.companies.length)]; target.val *= 1 + (Math.random() * 0.08 - 0.02) * r.aggr; addNews('MERCADO', `${r.name} movimenta ${target.name} e altera o equilíbrio competitivo.`); }
+                if(Math.random() < 0.08 && state.companies.length) { changeRep({ investors: -2, media: -2 }); addNews('MERCADO', `${r.name} lançou uma ofensiva comercial contra o seu grupo.`); }
+            });
+            if(state.reputation.employees < 25 && state.companies.some(c => c.workers > 0) && Math.random() < 0.25) {
+                const affected = state.companies.filter(c => c.workers > 0)[Math.floor(Math.random() * state.companies.filter(c => c.workers > 0).length)];
+                affected.workers = Math.max(0, Math.floor(affected.workers * 0.9)); addNews('CRISE', `Funcionários abandonaram a operação da ${affected.name} após meses de tensão.`);
+            }
+            if(state.reputation.consumers < 25 && Math.random() < 0.3) { Object.keys(state.economy.demands).forEach(k => state.economy.demands[k] = Math.max(0.1, state.economy.demands[k] * 0.94)); addNews('CRISE', 'Um boicote reduziu a demanda pelos produtos do seu grupo.'); }
+            if(state.reputation.government < 20 && Math.random() < 0.12) { const fine = Math.min(Math.max(100000, state.cash * 0.04), 15000000); state.cash -= fine; logTx('Fiscalização extraordinária', -fine); addNews('CRISE', `Órgãos reguladores aplicaram uma multa de ${fmt.format(fine)}.`); }
+            triggerWorldEvent();
+        }
+        function advanceLife() {
+            ensureLifeState();
+            state.player.stress = Math.max(0, Math.min(100, state.player.stress + (state.companies.length ? 1 : 0) - 2));
+            if(state.player.stress > 75) state.player.health = Math.max(0, state.player.health - 2); else if(state.player.stress < 35) state.player.health = Math.min(100, state.player.health + 1);
+            state.player.relationships.family = Math.max(0, Math.min(100, state.player.relationships.family - (state.player.stress > 70 ? 1 : 0)));
+            if(state.turn % 12 === 0) { state.player.age++; state.player.health = Math.max(0, state.player.health - 1); if(state.player.age % 10 === 0) addNews('VIDA', `Você completou ${state.player.age} anos. Suas decisões pessoais pesam mais no legado.`); }
+            if(state.player.health < 20 && Math.random() < 0.2) addNews('VIDA', 'Sua saúde exige atenção; reduza o estresse e cuide da rotina.');
+        }
         function hasPol(id) { if (state.player.politicians.includes(id)) return true; if (id === 'deputado' && ['prefeito', 'governador', 'presidente'].includes(state.player.office)) return true; if (id === 'senador' && ['governador', 'presidente'].includes(state.player.office)) return true; if (id === 'presidente' && state.player.office === 'presidente') return true; return false; }
         function checkBalance(amount) { if (state.cash < amount) { showToast('Saldo Insuficiente', `Precisa de ${fmt.format(amount)}.`, 'danger'); return false; } return true; }
 
@@ -1070,10 +1304,22 @@
                 if(hasPol('presidente')) p += 0.50;
                 let dem = (state.economy.demands[c.sector] || 1.0);
                 
-                let rev = (c.workers * COSTS.workerBaseRevenue) * p * dem * state.inflationMult;
+                const facility = state.ownedProperties.find(x => x.id === c.propertyId);
+                const utilization = facility ? Math.min(1, (c.workers + c.managers) / Math.max(1, facility.cap)) : 0.6;
+                const capacityUse = 0.65 + (utilization * 0.35);
+                const rampUp = Math.min(1, 0.55 + ((c.age || 0) * 0.06));
+                const customerTrust = 0.75 + (state.reputation.consumers / 200);
+                let rev = (c.workers * COSTS.workerBaseRevenue) * p * dem * state.inflationMult * capacityUse * rampUp * customerTrust;
                 let cost = ((c.workers * COSTS.workerSalary) + (c.managers * COSTS.managerSalary)) * state.inflationMult + (COSTS.fixedCost * state.inflationMult);
+                rev *= (1 + (c.brand || 0) * 0.03) * (1 + (c.tech || 0) * 0.05) * (0.65 + ((c.supplyHealth || 85) / 250));
+                cost *= 1 + (c.tech || 0) * 0.01;
+                if(state.reputation.employees < 30) cost *= 1.15;
+                if(state.reputation.employees > 75) cost *= 0.95;
                 if(c.sector === 'industria' && hasRural) cost *= 0.8; if(c.sector === 'varejo' && hasInd) rev *= 1.25;
                 if(c.focus === 'agressivo') { rev *= 1.20; cost *= 1.30; } if(c.focus === 'qualidade') { rev *= 0.90; } if(c.focus === 'corte') { cost *= 0.70; rev *= 0.80; } 
+                if(state.activeLaws.includes('clt_flex')) cost *= 0.8;
+                if(state.activeLaws.includes('subsidio_agro') && c.sector === 'rural') cost *= 0.7;
+                if(state.activeLaws.includes('taxa_tech') && c.sector === 'tecnologia') rev *= 0.8;
 
                 c.profit = rev - cost;
                 let myShareProfit = c.profit * (c.ownership / 100);
@@ -1125,6 +1371,7 @@
             document.getElementById('ui-char-name').textContent = state.player.name;
             document.getElementById('ui-cash').textContent = fmt.format(state.cash); document.getElementById('ui-cash').className = `text-2xl font-black tracking-tight ${state.cash >= 0 ? 'text-emerald-400' : 'text-rose-500'}`;
             document.getElementById('ui-networth').textContent = fmt.format(nw);
+            document.getElementById('ui-inflation').textContent = `${state.inflationMult.toFixed(2)}x`;
             document.getElementById('ui-legacy').innerHTML = `<i class="fa-solid fa-star text-sm"></i> ${state.player.legacy}`;
             document.getElementById('ui-profit').textContent = `${profit>=0?'+ ':''}${fmt.format(profit)}`; document.getElementById('ui-profit').className = `text-2xl font-black ${profit>=0?'text-emerald-400':'text-rose-500'}`;
             document.getElementById('ui-passive-income').textContent = `+ ${fmt.format(pass)}`; document.getElementById('ui-expenses').textContent = `- ${fmt.format(exp)}`;
@@ -1132,6 +1379,8 @@
 
         function updateUI() {
             calcFinances();
+            renderReputation();
+            renderWorldEvent();
             
             document.getElementById('btn-tab-smartcity').classList.toggle('hidden', !state.smartcity.unlocked);
             document.getElementById('btn-tab-fut-admin').classList.toggle('hidden', !state.futebol.clubes.some(c => c.shares >= 50));
@@ -1142,6 +1391,7 @@
                 document.getElementById('economy-indicators').innerHTML = Object.entries(state.economy.demands).map(([s,d]) => `<div class="flex justify-between items-center bg-slate-900 p-3 rounded-lg border border-slate-800"><span class="text-sm font-bold capitalize text-slate-400">${s}</span><span class="font-mono ${d>1.1?'text-emerald-400':(d<0.9?'text-rose-400':'text-slate-300')} bg-slate-950 px-2 py-1 rounded border border-slate-800">${(d*100).toFixed(0)}%</span></div>`).join('');
             }
             if(document.getElementById('tab-celular').classList.contains('active')) renderCelular();
+            if(document.getElementById('tab-vida').classList.contains('active')) renderLife();
             if(document.getElementById('tab-financas').classList.contains('active')) {
                 // ATUALIZAÇÃO DRE
                 document.getElementById('fin-gross-rev').textContent = fmt.format(state.financialReport.grossRevenue);
@@ -1183,8 +1433,36 @@
             if(document.getElementById('tab-fut-admin').classList.contains('active')) renderFutAdmin();
         }
 
+        function renderLife() {
+            ensureLifeState(); const p = state.player;
+            document.getElementById('life-health').textContent = `${Math.round(p.health)}/100`;
+            document.getElementById('life-health').className = `text-2xl font-black ${p.health < 35 ? 'text-rose-400' : 'text-emerald-400'}`;
+            document.getElementById('life-stress').textContent = `${Math.round(p.stress)}/100`;
+            document.getElementById('life-stress').className = `text-2xl font-black ${p.stress > 70 ? 'text-rose-400' : 'text-amber-400'}`;
+            document.getElementById('life-education').textContent = EDUCATION_LABELS[p.educationLevel] || 'Básica';
+            document.getElementById('life-age').textContent = `${p.age} anos`;
+            const labels = { family: 'Família', partner: 'Parceiro(a)', friends: 'Amigos' };
+            document.getElementById('life-relationships').innerHTML = Object.entries(labels).map(([k,l]) => `<div><div class="flex justify-between text-xs mb-1"><span class="text-slate-400">${l}</span><span class="text-white font-bold">${Math.round(p.relationships[k])}%</span></div><div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 rounded-full" style="width:${p.relationships[k]}%"></div></div></div>`).join('') + `<p class="text-xs text-slate-500 mt-3">${esc(p.family.partner)} · ${p.family.children} filho(s)${p.family.heir ? ` · Herdeiro: ${esc(p.family.heir)}` : ''}</p>`;
+            const assets = [['home','Residência'],['car','Veículos'],['yacht','Iate'],['plane','Aeronave']];
+            document.getElementById('life-assets').innerHTML = assets.map(([k,l]) => `<div class="bg-slate-900/70 border border-slate-800 rounded-lg p-3"><p class="text-[10px] uppercase text-slate-500">${l}</p><p class="font-bold text-white">${p.assets[k] ? fmt.format(p.assets[k]) : 'Nenhum'}</p></div>`).join('');
+        }
+        function lifeAction(action) {
+            ensureLifeState(); const p = state.player;
+            if(action === 'study') { const cost = 5000 * state.inflationMult; if(!checkBalance(cost)) return; state.cash -= cost; logTx('Educação pessoal', -cost); p.educationLevel = Math.min(3, p.educationLevel + 1); p.education = ['basica','tecnica','superior','pos'][p.educationLevel]; p.stress += 5; addNews('VIDA', `Você investiu em educação e alcançou o nível ${EDUCATION_LABELS[p.educationLevel]}.`); }
+            else if(action === 'rest') { p.stress -= 18; p.health += 6; addNews('VIDA', 'Uma pausa reduziu seu estresse e recuperou sua saúde.'); }
+            else if(action === 'network') { p.stress += 3; p.relationships.friends += 8; state.reputation.investors = Math.min(100, state.reputation.investors + 3); addNews('VIDA', 'Seu networking abriu portas com investidores e parceiros.'); }
+            else if(action === 'family') { p.stress -= 6; p.relationships.family += 10; p.family.children = Math.min(5, p.family.children + (Math.random() < 0.15 ? 1 : 0)); addNews('VIDA', 'Você priorizou a família e fortaleceu seus vínculos.'); }
+            else if(action === 'succession') { p.family.heir = p.family.children ? 'Filho mais velho' : 'Herdeiro a definir'; p.succession = { plannedAt: state.turn, heir: p.family.heir }; p.relationships.family += 3; addNews('LEGADO', `Plano de sucessão criado: ${p.family.heir}.`); }
+            p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress)); Object.keys(p.relationships).forEach(k => p.relationships[k] = Math.max(0, Math.min(100, p.relationships[k]))); updateUI(); manualSave();
+        }
+        function investCompany(id, type) {
+            const c = state.companies.find(x => x.id === id); if(!c) return; const cost = type === 'tech' ? 250000 : 150000; if(!checkBalance(cost)) return;
+            state.cash -= cost; logTx(type === 'tech' ? 'Investimento em P&D' : 'Investimento em marca', -cost); if(type === 'tech') { c.tech = (c.tech || 0) + 1; c.rdProgress = 0; } else c.brand = (c.brand || 0) + 1;
+            addNews('EMPRESA', `${c.name} recebeu investimento em ${type === 'tech' ? 'P&D' : 'marca'}.`); updateUI(); manualSave();
+        }
+
         function renderCelular() {
-            document.getElementById('news-container').innerHTML = state.news.map(n => `<div class="p-4 border-b border-slate-800/50 text-sm text-slate-300 hover:bg-slate-900"><span class="font-black ${n.type==='CRISE'?'text-rose-500':(n.type==='BOOM'?'text-emerald-400':(n.type==='OPORTUNIDADE'?'text-amber-400':'text-sky-400'))} mr-2 text-xs">[${n.type}]</span>${n.title}</div>`).join('');
+            document.getElementById('news-container').innerHTML = state.news.map(n => `<div class="p-4 border-b border-slate-800/50 text-sm text-slate-300 hover:bg-slate-900"><span class="font-black ${n.type==='CRISE'?'text-rose-500':(n.type==='BOOM'?'text-emerald-400':(n.type==='OPORTUNIDADE'?'text-amber-400':'text-sky-400'))} mr-2 text-xs">[${esc(n.type)}]</span>${esc(n.title)}</div>`).join('');
             let allBillionaires = state.rivals.map(r => ({ name: r.name, nw: r.nw, isPlayer: false })); allBillionaires.push({ name: state.player.name, nw: state.netWorth, isPlayer: true }); allBillionaires.sort((a, b) => b.nw - a.nw);
             document.getElementById('forbes-list').innerHTML = allBillionaires.map((b, i) => `<div class="flex justify-between p-3 rounded-lg border ${b.isPlayer ? 'bg-amber-900/20 border-amber-500/50' : 'bg-slate-950 border-slate-800'}"><span class="font-bold ${b.isPlayer ? 'text-amber-400' : 'text-white'}">#${i+1} ${b.name}</span><span class="font-mono text-emerald-400">${fmt.format(b.nw)}</span></div>`).join('');
             
@@ -1209,17 +1487,17 @@
 
             list.innerHTML = state.companies.map(c => {
                 let p = state.ownedProperties.find(x => x.id === c.propertyId); let cap = p ? p.cap : 999999;
-                return `<div class="glass-panel p-5 rounded-2xl border ${c.profit>=0?'border-emerald-500/30':'border-rose-500/30'} flex flex-col shadow-lg"><div class="flex justify-between items-start mb-2"><h3 class="text-xl font-bold text-white">${c.name}</h3><div class="bg-slate-900 px-2 py-1 rounded text-[10px] font-bold text-indigo-400 border border-indigo-900/50">${(c.focus||'padrao').toUpperCase()}</div></div><p class="text-xs text-slate-400 mb-4">${c.sector.toUpperCase()} | <span class="text-sky-400">${c.ownership}% Seu</span></p>
+                return `<div class="glass-panel p-5 rounded-2xl border ${c.profit>=0?'border-emerald-500/30':'border-rose-500/30'} flex flex-col shadow-lg"><div class="flex justify-between items-start mb-2"><h3 class="text-xl font-bold text-white">${c.name}</h3><div class="bg-slate-900 px-2 py-1 rounded text-[10px] font-bold text-indigo-400 border border-indigo-900/50">${(c.focus||'padrao').toUpperCase()}</div></div><p class="text-xs text-slate-400 mb-2">${c.sector.toUpperCase()} | <span class="text-sky-400">${c.ownership}% Seu</span></p><p class="text-[10px] text-slate-500 mb-4">P&D nível ${c.tech||0} · Marca nível ${c.brand||0} · Suprimentos ${Math.round(c.supplyHealth||85)}%</p>
                 <button onclick="toggleSaleStatus('${c.id}')" class="text-[10px] uppercase font-bold border ${c.openForSale !== false ? 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/50' : 'border-rose-500/30 text-rose-400 hover:bg-rose-900/50'} px-2 py-1 rounded w-full transition-colors mb-2"><i class="fa-solid ${c.openForSale !== false ? 'fa-door-open' : 'fa-lock'} mr-1"></i> ${c.openForSale !== false ? 'Aberto a M&A' : 'Fechado para Venda'}</button>
                 <div class="bg-slate-900 p-4 rounded-xl mb-4 text-center border border-slate-800"><span class="text-[10px] text-slate-500 font-bold uppercase block mb-1">Lucro Mensal</span><p class="text-2xl font-black ${c.profit>=0?'text-emerald-400':'text-rose-400'}">${fmt.format(c.profit)}</p></div><div class="space-y-3 mb-4">
                 <div class="flex items-center justify-between bg-slate-900/50 p-2 rounded-lg border border-slate-800"><span class="text-xs font-bold text-slate-400 uppercase">Trabalhadores <span class="text-indigo-400">(${c.workers+c.managers}/${cap>1000?'∞':cap})</span></span><div class="flex gap-1"><button onclick="fire('${c.id}','w',10)" class="px-2 py-1 bg-rose-950 text-rose-500 rounded text-[10px] hover:bg-rose-900 font-bold">-10</button><button onclick="fire('${c.id}','w',1)" class="px-2 py-1 bg-rose-900 text-rose-300 rounded text-xs hover:bg-rose-800 font-bold">-1</button><button onclick="hire('${c.id}','w',1)" class="px-2 py-1 bg-emerald-900 text-emerald-300 rounded text-xs hover:bg-emerald-800 font-bold">+1</button><button onclick="hire('${c.id}','w',10)" class="px-2 py-1 bg-emerald-950 text-emerald-500 rounded text-[10px] hover:bg-emerald-900 font-bold">+10</button></div></div>
-                </div><div class="mt-auto grid grid-cols-2 gap-2"><button onclick="openManageCompany('${c.id}')" class="bg-indigo-700/50 text-indigo-100 border border-indigo-600 rounded-lg py-2 text-xs font-bold">Admin (P&D)</button><button onclick="openSale('${c.id}')" class="bg-amber-700/50 text-amber-100 border border-amber-600 rounded-lg py-2 text-xs font-bold">Vender S.A</button></div></div>`;
+                </div><div class="grid grid-cols-2 gap-2 mb-2"><button onclick="investCompany('${c.id}','tech')" class="bg-sky-900/50 text-sky-200 border border-sky-700 rounded-lg py-2 text-[10px] font-bold">P&D · R$250 mil</button><button onclick="investCompany('${c.id}','brand')" class="bg-fuchsia-900/50 text-fuchsia-200 border border-fuchsia-700 rounded-lg py-2 text-[10px] font-bold">Marca · R$150 mil</button></div><div class="mt-auto grid grid-cols-2 gap-2"><button onclick="openManageCompany('${c.id}')" class="bg-indigo-700/50 text-indigo-100 border border-indigo-600 rounded-lg py-2 text-xs font-bold">Admin (P&D)</button><button onclick="openSale('${c.id}')" class="bg-amber-700/50 text-amber-100 border border-amber-600 rounded-lg py-2 text-xs font-bold">Vender S.A</button></div></div>`;
             }).join('');
         }
         function toggleSaleStatus(id) { let c = state.companies.find(x => x.id === id); c.openForSale = (c.openForSale === false) ? true : false; updateUI(); }
         function hire(id, t, qty) { let c = state.companies.find(x => x.id === id); let p = state.ownedProperties.find(x => x.id === c.propertyId); let cap = p ? p.cap : 999999999; if (c.workers + c.managers + qty > cap) return showToast('Lotação', 'Imóvel lotado!', 'warning'); if (t === 'w') c.workers += qty; if(t==='m') c.managers += qty; updateUI(); }
         function fire(id, t, qty) { let c = state.companies.find(x => x.id === id); if (t === 'w') c.workers = Math.max(0, c.workers - qty); if(t==='m') c.managers = Math.max(0, c.managers - qty); updateUI(); }
-        function startCompany() { let n = document.getElementById('input-empresa-nome').value; let pid = document.getElementById('select-empresa-imovel').value; let sec = document.getElementById('select-empresa-setor').value; let cap = Number(document.getElementById('input-empresa-capital').value) || 0; if(!n) return; let cost = COSTS.companyCreation + cap; if(!checkBalance(cost)) return; state.cash -= cost; state.companies.push({ id: Date.now().toString(), name: n, propertyId: pid, sector: sec, invested: cap, ownership: 100, openForSale: true, workers: 0, managers: 0, profit: 0, valuation: 0, focus: 'padrao', upgrades: { tech: 0, mkt: 0 }, age: 0 }); document.getElementById('modal-nova-empresa').classList.add('hidden'); updateUI(); }
+        function startCompany() { let n = sanitizeText(document.getElementById('input-empresa-nome').value); let pid = document.getElementById('select-empresa-imovel').value; let sec = document.getElementById('select-empresa-setor').value; let cap = Number(document.getElementById('input-empresa-capital').value) || 0; if(!n) return showToast('Dados incompletos', 'Informe um nome para a empresa.', 'warning'); if(!Number.isFinite(cap) || cap < 0) return showToast('Capital inválido', 'Informe um valor igual ou maior que zero.', 'warning'); if(!pid) return showToast('Imóvel obrigatório', 'Selecione um imóvel livre para sediar a empresa.', 'warning'); let cost = COSTS.companyCreation + cap; if(!checkBalance(cost)) return; state.cash -= cost; state.companies.push({ id: Date.now().toString(), name: n, propertyId: pid, sector: sec, invested: cap, ownership: 100, openForSale: true, workers: 0, managers: 0, profit: 0, valuation: 0, focus: 'padrao', upgrades: { tech: 0, mkt: 0 }, age: 0 }); document.getElementById('modal-nova-empresa').classList.add('hidden'); updateUI(); }
         function openManageCompany(id) { pendingManageId = id; let c = state.companies.find(x=>x.id===id); document.getElementById('manage-comp-name').textContent = c.name; document.getElementById('select-manage-focus').value = c.focus || 'padrao'; document.getElementById('modal-manage-company').classList.remove('hidden'); }
         function saveCompanyManagement() { let c = state.companies.find(x=>x.id===pendingManageId); c.focus = document.getElementById('select-manage-focus').value; document.getElementById('modal-manage-company').classList.add('hidden'); updateUI(); }
         function buyCompanyUpgrade(type) { let c = state.companies.find(x=>x.id===pendingManageId); let cost = 100000; if (!checkBalance(cost)) return; state.cash -= cost; c.upgrades[type]++; updateUI(); }
@@ -1397,7 +1675,7 @@
                     document.getElementById('fut-squad-list').innerHTML = c.players.sort((a,b)=>b.ovr-a.ovr).map(p => `
                         <div class="bg-slate-900 p-2 rounded-lg border border-slate-800 flex items-center justify-between">
                             <div class="flex items-center gap-2"><span class="text-[10px] font-bold text-slate-800 bg-slate-300 px-1 rounded">${p.pos}</span>
-                            <div><p class="text-white text-xs font-bold">${p.name} ${p.loanFrom?'<span class="text-[10px] text-sky-400 ml-1">(Emprestado)</span>':''}</p><p class="text-[10px] text-slate-500">OVR: <span class="text-green-400 font-bold">${p.ovr}</span> | Salário: ${fmt.format(p.sal)}</p></div></div>
+                            <div><p class="text-white text-xs font-bold">${esc(p.name)} ${p.loanFrom?'<span class="text-[10px] text-sky-400 ml-1">(Emprestado)</span>':''} ${p.injury ? '<span class="text-[10px] text-rose-400 ml-1">(Lesionado)</span>' : ''}</p><p class="text-[10px] text-slate-500">OVR: <span class="text-green-400 font-bold">${p.ovr}</span> | Moral: <span class="text-amber-300">${Math.round(p.morale || 0)}</span> | Salário: ${fmt.format(p.sal)}</p></div></div>
                             ${!p.loanFrom ? `<button onclick="futAction('sell_player', '${p.id}')" class="bg-rose-900 hover:bg-rose-800 text-rose-300 px-2 py-1 rounded text-[10px] font-bold transition-colors">Vender<br>${fmt.format(p.val)}</button>` : `<span class="text-[10px] text-sky-400">${p.loanTime}m restam</span>`}
                         </div>`).join('');
                 }
@@ -1441,6 +1719,9 @@
 
         function advanceMonth() {
             state.turn++;
+            advanceLife();
+            // Monthly inflation makes costs, prices and real profit evolve over time.
+            state.inflationMult = Math.min(5, state.inflationMult * (1 + 0.002 + Math.random() * 0.006));
             
             if(state.economy.eraTime > 0) {
                 state.economy.eraTime--;
@@ -1486,6 +1767,8 @@
                 sc.pop = Math.max(0, sc.pop + growth);
             }
 
+            runWorldSimulation();
+            settleClubFinances();
             calcFinances();
             
             state.cash += state.financialReport.grossRevenue + state.financialReport.passiveIncome + state.financialReport.cityTax;
@@ -1501,7 +1784,13 @@
             }
             if(state.taxes.pending > 0) {
                 state.taxes.deadline--;
-                if(state.taxes.deadline <= 0) { state.cash -= state.taxes.pending * 2.5; state.taxes.pending = 0; logTx('Multa Malha Fina', -(state.taxes.pending * 2.5)); showToast('MALHA FINA', 'Contas bloqueadas. Multa de 250% debitada.', 'danger'); }
+                if(state.taxes.deadline <= 0) {
+                    const taxPenalty = state.taxes.pending * 2.5;
+                    state.cash -= taxPenalty;
+                    logTx('Multa Malha Fina', -taxPenalty);
+                    state.taxes.pending = 0;
+                    showToast('MALHA FINA', 'Contas bloqueadas. Multa de 250% debitada.', 'danger');
+                }
             }
             
             if(Math.random() < 0.1 && state.vcOffers.length < 3) {
@@ -1519,6 +1808,7 @@
             });
             state.inboxOffers.forEach(o => o.expires--); state.inboxOffers = state.inboxOffers.filter(o => o.expires > 0);
             
+            simulateFootballMonth();
             state.futebol.championship.month++;
             if(state.futebol.championship.month > 12) {
                 ['ENG', 'ESP', 'FRA', 'BR_A', 'BR_B', 'BR_C'].forEach(l => {
@@ -1550,7 +1840,159 @@
             manualSave(); updateUI();
         }
 
-        window.onload = () => { updateUI(); };
+        // Football economy and controls: the UI already exposed these actions,
+        // but the original handler did not apply them to the simulation.
+        function settleClubFinances() {
+            const tvByLeague = { ENG: 18000000, ESP: 15000000, FRA: 12000000, BR_A: 9000000, BR_B: 3500000, BR_C: 1500000 };
+            state.futebol.clubes.forEach(c => {
+                const priceFactor = Math.max(0.35, Math.min(1.2, 1 - ((Number(c.ticket) || 80) - 80) / 300));
+                const fanFactor = 0.65 + ((c.governance?.fanConfidence || 50) / 200);
+                const attendance = Math.min(c.stadium, Math.floor(c.fans * 0.01 * priceFactor * fanFactor));
+                const tickets = attendance * Math.max(0, Number(c.ticket) || 0);
+                const merch = Math.floor(c.fans * 0.0015 * Math.max(0, Number(c.merch) || 0) * (c.ovr / 80));
+                const tv = tvByLeague[c.league] || 1000000;
+                const sal = c.players.reduce((sum, p) => sum + (Number(p.sal) || 0), 0);
+                const maint = Math.floor((Number(c.stadium) || 0) * 100);
+                const profit = tickets + merch + tv - sal - maint;
+                c.fin = { tickets, merch, tv, sal, maint };
+                c.lastProfit = profit;
+                c.funds = Math.max(0, c.funds + profit);
+            });
+        }
+
+        function simulateFootballMonth() {
+            const leagues = ['ENG', 'ESP', 'FRA', 'BR_A', 'BR_B', 'BR_C'];
+            leagues.forEach(league => {
+                const clubs = state.futebol.clubes.filter(c => c.league === league).sort(() => Math.random() - 0.5);
+                for(let i = 0; i + 1 < clubs.length; i += 2) {
+                    const home = clubs[i], away = clubs[i + 1];
+                    const styleBonus = c => ({ offensive: 2, defensive: 1, youth: (c.players.filter(p => p.ovr < 75).length > 5 ? 1 : -1), balanced: 0 }[c.governance?.style || 'balanced'] || 0);
+                    const homeStrength = (home.ovr || 60) + 4 + (home.form || 0) + styleBonus(home) + ((home.governance?.manager?.quality || 60) - 60) * 0.25;
+                    const awayStrength = (away.ovr || 60) + styleBonus(away) + (away.form || 0) + ((away.governance?.manager?.quality || 60) - 60) * 0.25;
+                    const homeChance = 1 / (1 + Math.exp(-(homeStrength - awayStrength) / 8));
+                    const homeWin = Math.random() < homeChance;
+                    const draw = Math.random() < 0.22;
+                    const homeGoals = draw ? Math.floor(Math.random() * 3) : (homeWin ? 1 + Math.floor(Math.random() * 3) : Math.floor(Math.random() * 2));
+                    const awayGoals = draw ? homeGoals : (homeWin ? Math.floor(Math.random() * 2) : 1 + Math.floor(Math.random() * 3));
+                    home.gf += homeGoals; home.gc += awayGoals; away.gf += awayGoals; away.gc += homeGoals;
+                    home.governance.matches.unshift({ season: state.futebol.championship.season, month: state.futebol.championship.month, opponent: away.name, goalsFor: homeGoals, goalsAgainst: awayGoals, home: true });
+                    away.governance.matches.unshift({ season: state.futebol.championship.season, month: state.futebol.championship.month, opponent: home.name, goalsFor: awayGoals, goalsAgainst: homeGoals, home: false });
+                    home.governance.matches = home.governance.matches.slice(0, 12); away.governance.matches = away.governance.matches.slice(0, 12);
+                    if(homeGoals === awayGoals) { home.pts += 1; away.pts += 1; home.form = Math.max(-5, (home.form || 0) - 1); away.form = Math.max(-5, (away.form || 0) - 1); }
+                    else { const winner = homeGoals > awayGoals ? home : away; const loser = winner === home ? away : home; winner.pts += 3; winner.form = Math.min(5, (winner.form || 0) + 1); loser.form = Math.max(-5, (loser.form || 0) - 1); }
+                    [home, away].forEach(c => { const won = (c === home ? homeGoals > awayGoals : awayGoals > homeGoals); c.governance.fanConfidence = Math.max(0, Math.min(100, c.governance.fanConfidence + (won ? 2 : (homeGoals === awayGoals ? 0 : -2)))); c.governance.board = Math.max(0, Math.min(100, c.governance.board + (won ? 1 : -1))); c.players.forEach(p => { p.morale = Math.max(0, Math.min(100, (p.morale || 70) + (won ? 2 : -1))); }); if(Math.random() < 0.06 && c.players.length) { const p = c.players[Math.floor(Math.random() * c.players.length)]; p.injury = 1 + Math.floor(Math.random() * 3); } });
+                    if((home.shares >= 50 || away.shares >= 50) && Math.random() < 0.35) addNews(homeGoals === awayGoals ? 'ESPORTE' : 'BOOM', `${home.name} ${homeGoals} x ${awayGoals} ${away.name}: a rodada mexeu com a disputa.`);
+                }
+                state.futebol.clubes.filter(c => c.league === league).forEach(c => { c.players.forEach(p => { if(p.injury > 0) p.injury--; }); if(c.governance.sponsor.months > 0) c.governance.sponsor.months--; if(c.governance.sponsor.months === 0) c.governance.sponsor.value = 0; c.governance.rumors = (c.governance.rumors || []).map(r => ({ ...r, expires: r.expires - 1 })).filter(r => r.expires > 0); if(c.governance.board < 20 && Math.random() < 0.15) { c.governance.manager = { name: ['Rafael Moura','Eduardo Lins','Marcos Vidal'][Math.floor(Math.random()*3)], quality: 62 + Math.floor(Math.random()*18), salary: 220000, months: 24 }; c.governance.board = 45; addNews('ESPORTE', `O conselho do ${c.name} demitiu o treinador após a sequência de resultados ruins.`); } });
+            });
+        }
+
+        function currentOwnedClub() { const id = document.getElementById('fut-admin-select')?.value; return state.futebol.clubes.find(c => c.id === id && c.shares >= 50); }
+        function setClubRole(role) { const c = currentOwnedClub(); if(!c) return; c.governance.role = ['owner','owner_president','owner_coach','owner_all'].includes(role) ? role : 'owner'; renderClubGovernance(); addNews('ESPORTE', `${c.name} definiu o papel do proprietário na gestão do clube.`); manualSave(); }
+        function setClubStyle(style) { const c = currentOwnedClub(); if(!c) return; c.governance.style = ['balanced','offensive','defensive','youth'].includes(style) ? style : 'balanced'; c.governance.board = Math.max(0, Math.min(100, c.governance.board + (style === 'youth' ? 1 : 0))); addNews('ESPORTE', `${c.name} adotou um perfil esportivo ${style === 'offensive' ? 'ofensivo' : style === 'defensive' ? 'defensivo' : style === 'youth' ? 'voltado à base' : 'equilibrado'}.`); renderClubGovernance(); manualSave(); }
+        function clubAction(action) {
+            const c = currentOwnedClub(); if(!c) return showToast('Clube não selecionado', 'Controle pelo menos 50% de um clube.', 'warning');
+            if(action === 'dividend') {
+                const amount = Math.max(0, Math.floor((c.lastProfit || 0) * 0.25)); if(amount <= 0 || c.funds < amount) return showToast('Sem lucro distribuível', 'O clube precisa de lucro e caixa para pagar dividendos.', 'warning');
+                c.funds -= amount; const received = amount * (c.shares / 100); state.cash += received; c.governance.dividendsPaid += amount; c.governance.board = Math.max(0, c.governance.board - 3); logTx(`Dividendos ${c.name}`, received); addNews('MERCADO', `${c.name} aprovou dividendos de ${fmt.format(amount)} aos acionistas.`);
+            } else if(action === 'academy') {
+                const cost = 10000000; if(c.funds < cost) return showToast('Caixa insuficiente', 'O clube precisa de R$ 10 milhões.', 'danger'); c.funds -= cost; c.governance.academyLevel++; const prospect = generatePlayer(Math.min(88, (c.ovr || 70) - 3 + c.governance.academyLevel)); prospect.morale = 80; c.players.push(prospect); c.governance.fanConfidence = Math.min(100, c.governance.fanConfidence + 8); c.governance.fanGroups.families = Math.min(100, c.governance.fanGroups.families + 3); c.governance.board = Math.min(100, c.governance.board + 3); addNews('ESPORTE', `${c.name} revelou uma promessa da base: ${prospect.name}.`);
+            } else if(action === 'sponsor') {
+                if(c.governance.sponsor.value > 0 && c.governance.sponsor.months > 0) return showToast('Contrato ativo', 'O patrocinador atual ainda está vigente.', 'warning'); const value = Math.floor((c.fans * 0.25) + ((c.ovr || 70) * 100000)); c.governance.sponsor = { name: ['Aurora Energy','Vértice Bank','Nexus Mobile'][Math.floor(Math.random()*3)], value, months: 12 }; c.funds += value; c.governance.board = Math.min(100, c.governance.board + 5); addNews('MERCADO', `${c.name} fechou patrocínio de ${fmt.format(value)} por 12 meses.`);
+            }
+            updateUI(); manualSave();
+        }
+        function renderClubGovernance() {
+            const c = currentOwnedClub(); const box = document.getElementById('club-governance'); if(!box) return; const interview = document.getElementById('btn-football-interview');
+            if(!c) { box.classList.add('hidden'); if(interview) interview.classList.add('hidden'); return; }
+            box.classList.remove('hidden'); const g = c.governance; document.getElementById('club-role').value = g.role || 'owner'; document.getElementById('club-style').value = g.style || 'balanced'; document.getElementById('club-board-confidence').textContent = `${Math.round(g.board)}/100`; document.getElementById('club-board-confidence').className = `text-2xl font-black ${g.board >= 70 ? 'text-emerald-400' : (g.board >= 40 ? 'text-amber-400' : 'text-rose-400')}`; document.getElementById('club-fan-confidence').textContent = `${Math.round(g.fanConfidence)}/100`; document.getElementById('club-fan-confidence').className = `text-2xl font-black ${g.fanConfidence >= 70 ? 'text-emerald-400' : (g.fanConfidence >= 40 ? 'text-amber-400' : 'text-rose-400')}`; document.getElementById('club-sponsor-name').textContent = g.sponsor.value > 0 ? g.sponsor.name : 'Sem contrato'; document.getElementById('club-sponsor-value').textContent = g.sponsor.value > 0 ? `${fmt.format(g.sponsor.value)} · ${g.sponsor.months} meses` : '';
+            const hints = { owner: 'O técnico e o presidente cuidam da operação diária. Você decide orçamento e grandes movimentos.', owner_president: 'Você é dono e presidente. Pode falar com imprensa, torcida e patrocinadores.', owner_coach: 'Você é dono e técnico. Pode assumir decisões esportivas e continuar delegando a presidência.', owner_all: 'Você concentra propriedade, presidência e comando técnico. A pressão também é máxima.' }; document.getElementById('club-role-hint').textContent = hints[g.role] || hints.owner; if(interview) interview.classList.toggle('hidden', !['owner_president','owner_all'].includes(g.role));
+        }
+        function refreshTransferRumors() {
+            const c = currentOwnedClub(); if(!c) return; const pool = state.futebol.clubes.filter(x => x.id !== c.id && x.players.length).flatMap(x => x.players.filter(p => !p.loanFrom).map(p => ({ player: p, club: x })));
+            c.governance.rumors = pool.sort(() => Math.random() - 0.5).slice(0, 4).map(x => ({ playerId: x.player.id, sourceClubId: x.club.id, playerName: x.player.name, clubName: x.club.name, asking: Math.floor(x.player.val * (1.15 + Math.random() * 0.4)), expires: 3 }));
+            addNews('ESPORTE', `O mercado publicou ${c.governance.rumors.length} rumores envolvendo o ${c.name}.`); renderClubLivePanels();
+        }
+        function renderClubLivePanels() {
+            const c = currentOwnedClub(); const panels = document.getElementById('club-live-panels'); if(!panels || !c) { if(panels) panels.classList.add('hidden'); return; } panels.classList.remove('hidden');
+            const g = c.governance; const center = document.getElementById('club-match-center'); const season = document.getElementById('club-season-status'); if(season) season.textContent = `Temporada ${state.futebol.championship.season} · ${c.pts} pts`;
+            if(center) center.innerHTML = (g.matches || []).slice(0, 6).map(m => { const win = m.goalsFor > m.goalsAgainst, draw = m.goalsFor === m.goalsAgainst; return `<div class="flex justify-between items-center bg-slate-900 p-2 rounded-lg border border-slate-800"><span class="text-[10px] text-slate-500">M${m.month} ${m.home ? 'Casa' : 'Fora'}</span><span class="text-xs text-slate-300">${esc(m.opponent)}</span><b class="text-sm ${win ? 'text-emerald-400' : (draw ? 'text-amber-400' : 'text-rose-400')}">${m.goalsFor} x ${m.goalsAgainst}</b></div>`; }).join('') || '<p class="text-xs text-slate-500">A primeira rodada ainda não foi disputada.</p>';
+            const list = document.getElementById('club-transfer-list'); if(list) list.innerHTML = (g.rumors || []).map(r => `<div class="flex items-center justify-between gap-2 bg-slate-900 p-2 rounded-lg border border-slate-800"><div><p class="text-xs text-white font-bold">${esc(r.playerName)}</p><p class="text-[10px] text-slate-500">${esc(r.clubName)} · ${fmt.format(r.asking)}</p></div><button onclick="openPlayerNegotiation('${r.playerId}','${r.sourceClubId}')" class="text-[10px] bg-sky-700 hover:bg-sky-600 text-white px-2 py-1 rounded">Negociar</button></div>`).join('') || '<p class="text-xs text-slate-500">Clique em Atualizar para buscar rumores.</p>';
+        }
+
+        function footballInterview() {
+            const cId = document.getElementById('fut-admin-select')?.value;
+            const c = state.futebol.clubes.find(x => x.id === cId);
+            if(!c || c.shares < 50) return showToast('Sem autoridade', 'Você precisa controlar pelo menos 50% de um clube.', 'warning');
+            const answer = window.prompt(`Entrevista de ${c.name}\n1 - Defender o projeto e a torcida\n2 - Prometer um título imediatamente\n3 - Criticar arbitragem e rivais\n\nEscolha 1, 2 ou 3:`);
+            if(answer === null) return;
+            const choice = Number(answer);
+            const responses = {
+                1: { text: `O presidente ${sanitizeText(state.player.name, 40)} defendeu o projeto do ${c.name} e pediu paciência à torcida.`, effects: { fans: 7, media: 6, investors: 2 } },
+                2: { text: `${sanitizeText(state.player.name, 40)} prometeu um título para o ${c.name} em entrevista e aumentou a pressão sobre o elenco.`, effects: { fans: 10, media: -2, investors: -4 } },
+                3: { text: `O presidente do ${c.name} atacou rivais e a arbitragem; a entrevista dividiu a opinião pública.`, effects: { fans: 3, media: -8, investors: -2 } }
+            };
+            const response = responses[choice]; if(!response) return showToast('Entrevista cancelada', 'Escolha inválida.', 'warning');
+            changeRep(response.effects); addNews('ESPORTE', response.text); showToast('Entrevista publicada', 'A repercussão já começou.', 'info'); updateUI(); manualSave();
+        }
+
+        const _originalFutAction = futAction;
+        futAction = function(act, extra) {
+            const cId = document.getElementById('fut-admin-select').value;
+            const c = state.futebol.clubes.find(x => x.id === cId);
+            if(!c || c.shares < 50) return;
+            if(act === 'set_prices') {
+                const ticket = Number(document.getElementById('fut-input-ticket').value);
+                const merch = Number(document.getElementById('fut-input-merch').value);
+                if(!Number.isFinite(ticket) || !Number.isFinite(merch) || ticket <= 0 || merch <= 0) return showToast('Preço inválido', 'Informe preços positivos.', 'warning');
+                c.ticket = ticket; c.merch = merch; showToast('Preços atualizados', 'Os novos valores serão usados no próximo mês.', 'success');
+            } else if(act === 'upgrade_stadium') {
+                const cost = 50000000;
+                if(c.funds < cost) return showToast('Caixa insuficiente', 'O clube precisa ter R$ 50 milhões em caixa.', 'danger');
+                c.funds -= cost; c.stadium += 5000; showToast('Estádio ampliado', '+5.000 lugares disponíveis.', 'success');
+            } else if(act === 'inject' || act === 'withdraw') {
+                const v = Number(document.getElementById('fut-input-cash').value);
+                if(!Number.isFinite(v) || v <= 0) return showToast('Valor inválido', 'Informe um valor positivo.', 'warning');
+            }
+            _originalFutAction(act, extra);
+        };
+
+        const _originalOpenSale = openSale;
+        openSale = function(id) {
+            const c = state.companies.find(x => x.id === id);
+            if(c && c.openForSale === false) return showToast('Venda bloqueada', 'Abra a empresa para M&A antes de anunciar.', 'warning');
+            _originalOpenSale(id);
+        };
+        const _originalConfirmSale = confirmSale;
+        confirmSale = function() {
+            const price = Number(document.getElementById('input-sale-price').value);
+            if(!Number.isFinite(price) || price <= 0) return showToast('Preço inválido', 'Informe um preço positivo.', 'warning');
+            _originalConfirmSale();
+        };
+        const _originalFire = fire;
+        fire = function(id, type, qty) { _originalFire(id, type, qty); changeRep({ employees: -Math.min(3, qty), media: qty >= 10 ? -1 : 0 }); updateUI(); };
+        const _originalSabotage = directSabotage;
+        directSabotage = function(rivalId) { _originalSabotage(rivalId); changeRep({ government: -2, media: -2, investors: -1 }); updateUI(); };
+        const _originalFakeNews = plantFakeNews;
+        plantFakeNews = function() { _originalFakeNews(); changeRep({ media: -5, government: -2, consumers: -2 }); updateUI(); };
+        const _originalAddNews = addNews;
+        addNews = function(type, title) { _originalAddNews(type, title); addTimeline(title, type); };
+
+        const _originalRenderFutAdmin = renderFutAdmin;
+        renderFutAdmin = function() {
+            _originalRenderFutAdmin();
+            renderClubGovernance();
+            renderClubLivePanels();
+            const cId = document.getElementById('fut-admin-select').value;
+            const c = state.futebol.clubes.find(x => x.id === cId);
+            if(!c) return;
+            document.getElementById('fut-input-ticket').value = c.ticket || 0;
+            document.getElementById('fut-input-merch').value = c.merch || 0;
+            const fin = c.fin || {};
+            ['tickets','merch','tv','sal','maint'].forEach(k => { const el = document.getElementById('fut-fin-' + k); if(el) el.textContent = fmt.format(fin[k] || 0); });
+        };
+
+        window.onload = () => { checkSquadsAndLeague(); updateUI(); };
     </script>
 </body>
 </html>
