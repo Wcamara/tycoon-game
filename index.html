@@ -1156,12 +1156,12 @@
                 { label: 'Estudar o mercado primeiro', effects: { investors: 2 }, result: 'Você preferiu observar os preços e ganhou uma leitura melhor do mercado.' },
                 { label: 'Ignorar a oportunidade', effects: {}, result: 'O programa seguiu sem você. Outras empresas ocuparão esse espaço.' }
             ]},
-            { id: 'supplier_crisis', condition: () => state.companies.length > 0, title: 'Crise na cadeia de fornecedores', description: 'Um fornecedor estratégico foi acusado de fraude e a imprensa está pressionando seu grupo por uma resposta.', choices: [
+            { id: 'supplier_crisis', condition: () => state.companies.some(c => (c.age || 0) >= 3), title: 'Crise na cadeia de fornecedores', description: 'Um fornecedor estratégico foi acusado de fraude e a imprensa está pressionando seu grupo por uma resposta.', choices: [
                 { label: 'Romper contrato e auditar', cost: 2000000, effects: { media: 8, government: 5, investors: 3 }, result: 'O grupo abriu os livros e recuperou a confiança do mercado.' },
                 { label: 'Manter o fornecedor em silêncio', effects: { media: -12, government: -8, investors: -6 }, result: 'A decisão economizou caixa, mas o silêncio virou manchete.' },
                 { label: 'Criar programa de conformidade', cost: 5000000, effects: { media: 15, employees: 5, consumers: 8 }, result: 'O investimento em conformidade melhorou a imagem do grupo.' }
             ]},
-            { id: 'strike', condition: () => state.companies.some(c => c.workers > 0), title: 'Greve ameaça a operação', description: 'Funcionários de uma de suas empresas pararam as máquinas pedindo melhores condições e participação nos resultados.', choices: [
+            { id: 'strike', condition: () => state.companies.some(c => c.workers > 0 && (c.age || 0) >= 6), title: 'Greve ameaça a operação', description: 'Funcionários de uma de suas empresas pararam as máquinas pedindo melhores condições e participação nos resultados.', choices: [
                 { label: 'Negociar e reajustar salários', cost: 1500000, effects: { employees: 15, media: 5, investors: -3 }, result: 'O acordo encerrou a greve e reduziu a tensão interna.' },
                 { label: 'Substituir os grevistas', cost: 500000, effects: { employees: -18, media: -12, consumers: -5 }, result: 'A operação voltou, mas a reação pública foi imediata.' },
                 { label: 'Esperar a greve passar', effects: { employees: -8, media: -6 }, result: 'A paralisação terminou, deixando uma cicatriz na cultura da empresa.' }
@@ -1235,18 +1235,19 @@
             if(!active) { modal.classList.add('hidden'); return; }
             const event = WORLD_EVENTS.find(e => e.id === active.id); if(!event) { state.world.activeEvent = null; modal.classList.add('hidden'); return; }
             document.getElementById('world-event-title').textContent = event.title; document.getElementById('world-event-description').textContent = event.description;
-            document.getElementById('world-event-choices').innerHTML = event.choices.map((choice, i) => `<button onclick="resolveWorldEvent(${i})" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 transition-colors"><span class="block text-white font-bold">${choice.label}</span><span class="text-xs text-slate-400">${choice.cost ? `Custo: ${fmt.format(choice.cost)} · ` : ''}${Object.entries(choice.effects).map(([k,v]) => `${REP_LABELS[k]} ${v > 0 ? '+' : ''}${v}`).join(' · ')}</span></button>`).join('');
+            document.getElementById('world-event-choices').innerHTML = event.choices.map((choice, i) => { const cost = choice.cost ? Math.min(choice.cost, Math.max(0, Math.floor(state.cash * 0.08))) : 0; return `<button onclick="resolveWorldEvent(${i})" class="w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900 hover:bg-slate-800 transition-colors"><span class="block text-white font-bold">${choice.label}</span><span class="text-xs text-slate-400">${choice.cost ? `Custo proporcional: ${fmt.format(cost)} · ` : ''}${Object.entries(choice.effects || {}).map(([k,v]) => `${REP_LABELS[k]} ${v > 0 ? '+' : ''}${v}`).join(' · ')}</span></button>`; }).join('') + `<button onclick="resolveWorldEvent('defer')" class="w-full text-left p-3 rounded-xl border border-amber-700/50 bg-amber-950/20 hover:bg-amber-900/30 transition-colors"><span class="block text-amber-200 font-bold">Adiar decisão</span><span class="text-xs text-amber-300/70">Sem custo agora; o evento volta mais tarde.</span></button>`;
             modal.classList.remove('hidden');
         }
         function triggerWorldEvent() {
-            ensureWorldState(); if(state.world.activeEvent || state.turn - state.world.lastEventTurn < 3 || Math.random() > 0.24) return;
+            ensureWorldState(); if(state.world.activeEvent || state.turn <= 6 || state.turn - state.world.lastEventTurn < 6 || Math.random() > 0.12) return;
             const eligible = WORLD_EVENTS.filter(e => !e.condition || e.condition()); if(!eligible.length) return;
             const event = eligible[Math.floor(Math.random() * eligible.length)]; state.world.activeEvent = { id: event.id }; state.world.lastEventTurn = state.turn; if(state.autoPlay) toggleTime(); addNews('MUNDO', `${event.title}: o império de ${sanitizeText(state.player.name, 40)} precisa decidir.`); renderWorldEvent();
         }
         function resolveWorldEvent(choiceIndex) {
-            ensureWorldState(); const active = state.world.activeEvent; const event = WORLD_EVENTS.find(e => e.id === active?.id); const choice = event?.choices[choiceIndex];
-            if(!event || !choice) return; if(choice.cost && !checkBalance(choice.cost)) return;
-            if(choice.cost) { state.cash -= choice.cost; logTx(`Evento: ${event.title}`, -choice.cost); }
+            ensureWorldState(); const active = state.world.activeEvent; const event = WORLD_EVENTS.find(e => e.id === active?.id); if(choiceIndex === 'defer') { state.world.activeEvent = null; state.world.lastEventTurn = Math.max(0, state.world.lastEventTurn - 4); addNews('MUNDO', `Você adiou a decisão sobre ${event?.title || 'o evento'}.`); document.getElementById('world-event-modal').classList.add('hidden'); updateUI(); manualSave(); return; } const choice = event?.choices[choiceIndex];
+            if(!event || !choice) return; const effectiveCost = choice.cost ? Math.min(choice.cost, Math.max(0, Math.floor(state.cash * 0.08))) : 0;
+            if(effectiveCost && !checkBalance(effectiveCost)) return;
+            if(effectiveCost) { state.cash -= effectiveCost; logTx(`Evento: ${event.title}`, -effectiveCost); }
             changeRep(choice.effects);
             if(event.id === 'supplier_crisis' && choiceIndex === 0) scheduleConsequence(3, 'A auditoria do fornecedor revelou uma economia de custos para o seu grupo.', { investors: 4 }, 500000);
             if(event.id === 'strike' && choiceIndex === 0) scheduleConsequence(4, 'O acordo trabalhista melhorou a produtividade, mas elevou a folha permanentemente.', { employees: 4 });
