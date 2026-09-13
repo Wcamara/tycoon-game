@@ -97,3 +97,6 @@ O valor da participação deverá depender do desempenho esportivo, caixa, torci
 - Ações pessoais com custo e efeito persistente: estudar, descansar, fazer networking, cuidar da família e planejar herdeiro.
 - Empresas com investimento separado em P&D e marca, progresso de pesquisa e impacto na receita, custo e reputação.
 - Cadeia de suprimentos dinâmica por empresa, com atrasos que reduzem confiança e geram notícias de crise.
+- Patrimônio pessoal jogável: residência, veículo, iate e aeronave com compra, venda, valorização pelo preço pago e manutenção mensal.
+- Benefícios pessoais de patrimônio sobre estresse, saúde e mobilidade social.
+- Sucessão executável a partir dos 50 anos, com herdeiro, aposentadoria, transferência do patrimônio e reinício da vida do sucessor aos 18 anos.

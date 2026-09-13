@@ -215,7 +215,7 @@
             <section id="tab-vida" class="tab-content space-y-6">
                 <div><h2 class="text-3xl font-black tracking-tight"><i class="fa-solid fa-heart-pulse mr-2 text-rose-400"></i>Minha Vida</h2><p class="text-slate-400 text-sm">Seu império também depende da sua saúde, relações e escolhas pessoais.</p></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Saúde</p><p id="life-health" class="text-2xl font-black text-emerald-400">80/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Estresse</p><p id="life-stress" class="text-2xl font-black text-amber-400">20/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Educação</p><p id="life-education" class="text-2xl font-black text-sky-400">Básica</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Idade</p><p id="life-age" class="text-2xl font-black text-white">22 anos</p></div></div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><button onclick="lifeAction('study')" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Estudar (R$5 mil)</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button></div></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><button onclick="lifeAction('study')" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Estudar (R$5 mil)</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button><button onclick="lifeAction('retire')" class="mt-2 w-full bg-purple-900/50 border border-purple-700 text-purple-200 p-3 rounded-lg text-xs font-bold">Aposentar e transferir legado</button></div></div>
                 <div class="glass-panel p-6 rounded-2xl border border-indigo-500/20"><h3 class="font-black text-white mb-4">Qualidade de vida e patrimônio pessoal</h3><div id="life-assets" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div></div>
             </section>
 
@@ -1289,6 +1289,8 @@
         }
         function advanceLife() {
             ensureLifeState();
+            const personalMaint = Object.entries(PERSONAL_ASSETS).reduce((sum, [key, asset]) => sum + (state.player.assets[key] ? asset.maint : 0), 0) * state.inflationMult;
+            if(personalMaint > 0) { state.cash -= personalMaint; logTx('Manutenção do patrimônio pessoal', -personalMaint); if(state.cash < 0) { state.player.stress = Math.min(100, state.player.stress + 3); addNews('VIDA', 'A manutenção do patrimônio pessoal pressionou seu caixa.'); } }
             state.player.stress = Math.max(0, Math.min(100, state.player.stress + (state.companies.length ? 1 : 0) - 2));
             if(state.player.stress > 75) state.player.health = Math.max(0, state.player.health - 2); else if(state.player.stress < 35) state.player.health = Math.min(100, state.player.health + 1);
             state.player.relationships.family = Math.max(0, Math.min(100, state.player.relationships.family - (state.player.stress > 70 ? 1 : 0)));
@@ -1440,6 +1442,12 @@
             if(document.getElementById('tab-fut-admin').classList.contains('active')) renderFutAdmin();
         }
 
+        const PERSONAL_ASSETS = {
+            home: { label: 'Residência', price: 250000, maint: 2500, health: 2, stress: -2, desc: 'Conforto e estabilidade' },
+            car: { label: 'Veículo', price: 80000, maint: 1200, health: 0, stress: -1, desc: 'Mobilidade e status' },
+            yacht: { label: 'Iate', price: 5000000, maint: 35000, health: 1, stress: -5, desc: 'Lazer e networking' },
+            plane: { label: 'Aeronave', price: 20000000, maint: 120000, health: 0, stress: -3, desc: 'Viagens e negócios' }
+        };
         function renderLife() {
             ensureLifeState(); const p = state.player;
             document.getElementById('life-health').textContent = `${Math.round(p.health)}/100`;
@@ -1451,7 +1459,7 @@
             const labels = { family: 'Família', partner: 'Parceiro(a)', friends: 'Amigos' };
             document.getElementById('life-relationships').innerHTML = Object.entries(labels).map(([k,l]) => `<div><div class="flex justify-between text-xs mb-1"><span class="text-slate-400">${l}</span><span class="text-white font-bold">${Math.round(p.relationships[k])}%</span></div><div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 rounded-full" style="width:${p.relationships[k]}%"></div></div></div>`).join('') + `<p class="text-xs text-slate-500 mt-3">${esc(p.family.partner)} · ${p.family.children} filho(s)${p.family.heir ? ` · Herdeiro: ${esc(p.family.heir)}` : ''}</p>`;
             const assets = [['home','Residência'],['car','Veículos'],['yacht','Iate'],['plane','Aeronave']];
-            document.getElementById('life-assets').innerHTML = assets.map(([k,l]) => `<div class="bg-slate-900/70 border border-slate-800 rounded-lg p-3"><p class="text-[10px] uppercase text-slate-500">${l}</p><p class="font-bold text-white">${p.assets[k] ? fmt.format(p.assets[k]) : 'Nenhum'}</p></div>`).join('');
+            document.getElementById('life-assets').innerHTML = assets.map(([k,l]) => { const a = PERSONAL_ASSETS[k]; const owned = p.assets[k] || 0; return `<div class="bg-slate-900/70 border border-slate-800 rounded-lg p-3"><p class="text-[10px] uppercase text-slate-500">${l}</p><p class="font-bold text-white">${owned ? fmt.format(owned) : 'Nenhum'}</p><p class="text-[10px] text-slate-500 mt-1">${a.desc} · manutenção ${fmt.format(a.maint)}/mês</p><div class="flex gap-1 mt-2">${!owned ? `<button onclick="buyPersonalAsset('${k}')" class="flex-1 bg-emerald-800/60 text-emerald-200 rounded py-1 text-[10px] font-bold">Comprar ${fmt.format(a.price)}</button>` : `<button onclick="sellPersonalAsset('${k}')" class="flex-1 bg-rose-900/60 text-rose-200 rounded py-1 text-[10px] font-bold">Vender</button>`}</div></div>`; }).join('');
         }
         function lifeAction(action) {
             ensureLifeState(); const p = state.player;
@@ -1459,8 +1467,20 @@
             else if(action === 'rest') { p.stress -= 18; p.health += 6; addNews('VIDA', 'Uma pausa reduziu seu estresse e recuperou sua saúde.'); }
             else if(action === 'network') { p.stress += 3; p.relationships.friends += 8; state.reputation.investors = Math.min(100, state.reputation.investors + 3); addNews('VIDA', 'Seu networking abriu portas com investidores e parceiros.'); }
             else if(action === 'family') { p.stress -= 6; p.relationships.family += 10; p.family.children = Math.min(5, p.family.children + (Math.random() < 0.15 ? 1 : 0)); addNews('VIDA', 'Você priorizou a família e fortaleceu seus vínculos.'); }
-            else if(action === 'succession') { p.family.heir = p.family.children ? 'Filho mais velho' : 'Herdeiro a definir'; p.succession = { plannedAt: state.turn, heir: p.family.heir }; p.relationships.family += 3; addNews('LEGADO', `Plano de sucessão criado: ${p.family.heir}.`); }
+            else if(action === 'succession') { if(!p.family.children) return showToast('Sem herdeiro', 'Tenha ao menos um filho antes de registrar um herdeiro.', 'warning'); p.family.heir = 'Filho mais velho'; p.succession = { plannedAt: state.turn, heir: p.family.heir, active: true }; p.relationships.family += 3; addNews('LEGADO', `Plano de sucessão criado: ${p.family.heir}.`); }
+            else if(action === 'retire') { if(p.age < 50) return showToast('Aposentadoria indisponível', 'A aposentadoria planejada fica disponível a partir dos 50 anos.', 'warning'); if(!p.succession?.active || !p.family.children) return showToast('Sucessão incompleta', 'Planeje a sucessão e tenha um herdeiro antes de se aposentar.', 'warning'); executeSuccession(); return; }
             p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress)); Object.keys(p.relationships).forEach(k => p.relationships[k] = Math.max(0, Math.min(100, p.relationships[k]))); updateUI(); manualSave();
+        }
+        function buyPersonalAsset(type) {
+            ensureLifeState(); const a = PERSONAL_ASSETS[type]; if(!a || state.player.assets[type]) return;
+            const price = Math.floor(a.price * state.inflationMult); if(!checkBalance(price)) return; state.cash -= price; state.player.assets[type] = price; logTx(`Compra pessoal: ${a.label}`, -price); state.player.health = Math.min(100, state.player.health + a.health); state.player.stress = Math.max(0, state.player.stress + a.stress); addNews('VIDA', `Você comprou ${a.label.toLowerCase()} e ampliou seu patrimônio pessoal.`); updateUI(); manualSave();
+        }
+        function sellPersonalAsset(type) {
+            ensureLifeState(); const a = PERSONAL_ASSETS[type]; const paid = state.player.assets[type]; if(!a || !paid) return;
+            const value = Math.floor(paid * 0.72); state.cash += value; state.player.assets[type] = 0; logTx(`Venda pessoal: ${a.label}`, value); addNews('VIDA', `${a.label} vendido por ${fmt.format(value)}.`); updateUI(); manualSave();
+        }
+        function executeSuccession() {
+            const p = state.player; const oldName = p.name; const heirName = `${p.family.heir || 'Herdeiro'} de ${oldName}`; p.name = heirName; p.age = 18; p.health = 85; p.stress = 25; p.education = 'basica'; p.educationLevel = 0; p.succession = { ...p.succession, active: false, executedAt: state.turn, heir: heirName }; p.legacy = (p.legacy || 0) + Math.floor(state.netWorth / 1000000); addNews('LEGADO', `${oldName} se aposentou. ${heirName} assumiu o patrimônio e os negócios.`); showToast('Sucessão concluída', `${heirName} assumiu o império.`, 'success'); updateUI(); manualSave();
         }
         function investCompany(id, type) {
             const c = state.companies.find(x => x.id === id); if(!c) return; const cost = type === 'tech' ? 250000 : 150000; if(!checkBalance(cost)) return;
