@@ -100,3 +100,7 @@ O valor da participação deverá depender do desempenho esportivo, caixa, torci
 - Patrimônio pessoal jogável: residência, veículo, iate e aeronave com compra, venda, valorização pelo preço pago e manutenção mensal.
 - Benefícios pessoais de patrimônio sobre estresse, saúde e mobilidade social.
 - Sucessão executável a partir dos 50 anos, com herdeiro, aposentadoria, transferência do patrimônio e reinício da vida do sucessor aos 18 anos.
+- Carreira inicial com vagas, exigência de educação, salário mensal, experiência e demissão voluntária.
+- Novo começo econômico com caixa inicial menor e fundação de empresa por coworking, sem exigir imóvel próprio.
+- Manutenção do patrimônio pessoal contabilizada no DRE e no fluxo de caixa mensal.
+- Painel visual de jornada pessoal com elementos de ambientação para reduzir a sensação de planilha.

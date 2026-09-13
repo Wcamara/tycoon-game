@@ -214,7 +214,9 @@
 
             <section id="tab-vida" class="tab-content space-y-6">
                 <div><h2 class="text-3xl font-black tracking-tight"><i class="fa-solid fa-heart-pulse mr-2 text-rose-400"></i>Minha Vida</h2><p class="text-slate-400 text-sm">Seu império também depende da sua saúde, relações e escolhas pessoais.</p></div>
+                <div class="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 p-6 shadow-2xl"><div class="absolute -right-4 -top-8 text-[120px] opacity-10">🌆</div><div class="relative max-w-xl"><p class="text-[10px] uppercase tracking-[0.3em] text-indigo-300 font-black">Sua jornada</p><h3 class="text-2xl font-black text-white mt-1">Construa uma vida antes de construir um império.</h3><p class="text-sm text-slate-300 mt-2">Trabalhe, estude, faça escolhas e transforme cada fase em uma história própria.</p><div class="flex gap-3 mt-4 text-2xl"><span title="Carreira">💼</span><span title="Educação">🎓</span><span title="Família">🏡</span><span title="Patrimônio">✈️</span></div></div></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Saúde</p><p id="life-health" class="text-2xl font-black text-emerald-400">80/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Estresse</p><p id="life-stress" class="text-2xl font-black text-amber-400">20/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Educação</p><p id="life-education" class="text-2xl font-black text-sky-400">Básica</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Idade</p><p id="life-age" class="text-2xl font-black text-white">22 anos</p></div></div>
+                <div class="glass-panel p-6 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><p class="text-[10px] uppercase font-bold tracking-widest text-cyan-400">Carreira e renda</p><h3 id="life-job" class="text-xl font-black text-white">Desempregado</h3><p id="life-job-detail" class="text-xs text-slate-400 mt-1">Escolha um trabalho para começar sua trajetória profissional.</p></div><div id="life-job-actions" class="flex flex-wrap gap-2"></div></div><div id="life-career-list" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4"></div></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><button onclick="lifeAction('study')" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Estudar (R$5 mil)</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button><button onclick="lifeAction('retire')" class="mt-2 w-full bg-purple-900/50 border border-purple-700 text-purple-200 p-3 rounded-lg text-xs font-bold">Aposentar e transferir legado</button></div></div>
                 <div class="glass-panel p-6 rounded-2xl border border-indigo-500/20"><h3 class="font-black text-white mb-4">Qualidade de vida e patrimônio pessoal</h3><div id="life-assets" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div></div>
             </section>
@@ -231,6 +233,7 @@
                         <h3 class="text-xl font-black text-emerald-400 mb-4 border-b border-emerald-900/30 pb-2"><i class="fa-solid fa-arrow-trend-up mr-2"></i> Receitas (Entradas)</h3>
                         <div class="space-y-4">
                             <div class="flex justify-between items-center"><span class="text-slate-300">Faturamento Bruto (Empresas)</span><span id="fin-gross-rev" class="font-mono font-bold text-emerald-400">R$ 0,00</span></div>
+                            <div class="flex justify-between items-center"><span class="text-slate-300">Salário do trabalho</span><span id="fin-job-income" class="font-mono font-bold text-cyan-400">R$ 0,00</span></div>
                             <div class="flex justify-between items-center"><span class="text-slate-300">Aluguéis Recebidos</span><span id="fin-rents" class="font-mono font-bold text-emerald-400">R$ 0,00</span></div>
                             <div class="flex justify-between items-center"><span class="text-slate-300">Rendimentos (CDB/Startups)</span><span id="fin-cdb" class="font-mono font-bold text-emerald-400">R$ 0,00</span></div>
                             <div class="flex justify-between items-center"><span class="text-slate-300">Arrecadação da Smart City</span><span id="fin-city" class="font-mono font-bold text-cyan-400">R$ 0,00</span></div>
@@ -839,13 +842,13 @@
         ];
 
         let DEFAULT_STATE = {
-            cash: 50000, turn: 1, netWorth: 50000, autoPlay: null, inflationMult: 1.0,
+            cash: 20000, turn: 1, netWorth: 20000, autoPlay: null, inflationMult: 1.0,
             companies: [], ownedProperties: [], bank: { cdb: 0, loan: 0 }, statement: [], news: [],
             reputation: { consumers: 50, employees: 50, government: 50, media: 50, investors: 50, fans: 50 },
             world: { lastEventTurn: 0, activeEvent: null, eventHistory: [], timeline: [], pendingConsequences: [], marketConfidence: 50, globalNewsTurn: 0, rivalRelations: {} },
             vcOffers: [], myVCs: [], marketCompanies: [],
             activeLaws: [], pendingLaw: null, lawVotes: { yes: 0, no: 0 }, taxes: { pending: 0, deadline: 0 },
-            player: { name: 'Mister Tycoon', lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null, age: 22, health: 80, stress: 20, education: 'basica', educationLevel: 0, traits: ['ambicioso'], relationships: { family: 60, partner: 40, friends: 50 }, family: { partner: 'Sem parceiro', children: 0, heir: null }, assets: { home: 0, car: 0, yacht: 0, plane: 0 }, succession: null },
+            player: { name: 'Mister Tycoon', lifestyle: 'sobrevivencia', legacy: 0, perks: [], megaprojects: [], politicians: [], office: null, age: 22, health: 80, stress: 20, education: 'basica', educationLevel: 0, traits: ['ambicioso'], relationships: { family: 60, partner: 40, friends: 50 }, family: { partner: 'Sem parceiro', children: 0, heir: null }, assets: { home: 0, car: 0, yacht: 0, plane: 0 }, succession: null, job: { id: 'none', title: 'Desempregado', salary: 0, years: 0 } },
             smartcity: { unlocked: false, pop: 0, happy: 100, tax: 0.10, zRes: 0, zCom: 0, zInd: 0, bParks: 0, bPolice: 0, bInfra: 1, policies: [], mega: [] },
             futebol: {
                 championship: { season: 1, month: 1 },
@@ -996,6 +999,13 @@
         function sanitizeText(value, max = 80) { return String(value ?? '').replace(/[<>"']/g, '').trim().slice(0, max); }
 
         const EDUCATION_LABELS = ['Básica', 'Técnica', 'Superior', 'Pós-graduação'];
+        const CAREERS = [
+            { id: 'assistant', title: 'Assistente administrativo', salary: 2800, req: 0, stress: 2 },
+            { id: 'sales', title: 'Executivo de vendas', salary: 6500, req: 1, stress: 4 },
+            { id: 'analyst', title: 'Analista de negócios', salary: 11000, req: 2, stress: 5 },
+            { id: 'manager', title: 'Gerente de operações', salary: 22000, req: 2, stress: 7 },
+            { id: 'director', title: 'Diretor executivo', salary: 45000, req: 3, stress: 9 }
+        ];
         function ensureLifeState() {
             const p = state.player || (state.player = {});
             if(!Number.isFinite(p.age)) p.age = 22; if(!Number.isFinite(p.health)) p.health = 80; if(!Number.isFinite(p.stress)) p.stress = 20;
@@ -1005,6 +1015,7 @@
             ['family','partner','friends'].forEach(k => { if(!Number.isFinite(p.relationships[k])) p.relationships[k] = 50; p.relationships[k] = Math.max(0, Math.min(100, p.relationships[k])); });
             if(!p.family) p.family = { partner: 'Sem parceiro', children: 0, heir: null }; if(!Number.isFinite(p.family.children)) p.family.children = 0;
             if(!p.assets) p.assets = { home: 0, car: 0, yacht: 0, plane: 0 }; ['home','car','yacht','plane'].forEach(k => { if(!Number.isFinite(p.assets[k])) p.assets[k] = 0; });
+            if(!p.job) p.job = { id: 'none', title: 'Desempregado', salary: 0, years: 0 }; if(!Number.isFinite(p.job.salary)) p.job.salary = 0; if(!Number.isFinite(p.job.years)) p.job.years = 0;
             p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress));
         }
         function ensureBusinessState() { state.companies.forEach(c => { if(!Number.isFinite(c.tech)) c.tech = c.upgrades?.tech || 0; if(!Number.isFinite(c.brand)) c.brand = 0; if(!Number.isFinite(c.supplyHealth)) c.supplyHealth = 85; if(!Number.isFinite(c.rdProgress)) c.rdProgress = 0; }); }
@@ -1289,9 +1300,8 @@
         }
         function advanceLife() {
             ensureLifeState();
-            const personalMaint = Object.entries(PERSONAL_ASSETS).reduce((sum, [key, asset]) => sum + (state.player.assets[key] ? asset.maint : 0), 0) * state.inflationMult;
-            if(personalMaint > 0) { state.cash -= personalMaint; logTx('Manutenção do patrimônio pessoal', -personalMaint); if(state.cash < 0) { state.player.stress = Math.min(100, state.player.stress + 3); addNews('VIDA', 'A manutenção do patrimônio pessoal pressionou seu caixa.'); } }
             state.player.stress = Math.max(0, Math.min(100, state.player.stress + (state.companies.length ? 1 : 0) - 2));
+            if(state.player.job && state.player.job.id !== 'none') state.player.job.years += (state.turn % 12 === 0 ? 1 : 0);
             if(state.player.stress > 75) state.player.health = Math.max(0, state.player.health - 2); else if(state.player.stress < 35) state.player.health = Math.min(100, state.player.health + 1);
             state.player.relationships.family = Math.max(0, Math.min(100, state.player.relationships.family - (state.player.stress > 70 ? 1 : 0)));
             if(state.turn % 12 === 0) { state.player.age++; state.player.health = Math.max(0, state.player.health - 1); if(state.player.age % 10 === 0) addNews('VIDA', `Você completou ${state.player.age} anos. Suas decisões pessoais pesam mais no legado.`); }
@@ -1302,11 +1312,14 @@
 
         function calcFinances() {
             let profit = 0, exp = 0, pass = 0, nw = state.cash + state.bank.cdb - state.bank.loan;
-            state.financialReport = { grossRevenue: 0, companyCosts: 0, passiveIncome: 0, livingCosts: 0, loanInterest: 0, propMaint: 0, cityTax: 0, irpj: 0 };
+            state.financialReport = { grossRevenue: 0, jobIncome: 0, companyCosts: 0, passiveIncome: 0, livingCosts: 0, loanInterest: 0, propMaint: 0, cityTax: 0, irpj: 0 };
             const hasRural = state.companies.some(c => c.sector === 'rural'); const hasInd = state.companies.some(c => c.sector === 'industria');
             const life = LIFESTYLES.find(l => l.id === state.player.lifestyle);
             
             let lifeCost = (life.cost * state.inflationMult); if(!hasPol('deputado')) { exp += lifeCost; state.financialReport.livingCosts += lifeCost; }
+            if(state.player.job && state.player.job.id !== 'none') { const salary = state.player.job.salary * state.inflationMult; pass += salary; state.financialReport.jobIncome = salary; }
+            const personalMaint = Object.entries(PERSONAL_ASSETS).reduce((sum, [key, asset]) => sum + (state.player.assets[key] ? asset.maint : 0), 0) * state.inflationMult;
+            if(personalMaint > 0) { exp += personalMaint; state.financialReport.livingCosts += personalMaint; }
 
             state.companies.forEach(c => {
                 let p = 1.0 + life.boost + (c.managers > 0 ? 0.3 : 0) + ((c.upgrades?.tech||0) * 0.25) + ((c.upgrades?.mkt||0) * 0.10);
@@ -1404,6 +1417,7 @@
             if(document.getElementById('tab-financas').classList.contains('active')) {
                 // ATUALIZAÇÃO DRE
                 document.getElementById('fin-gross-rev').textContent = fmt.format(state.financialReport.grossRevenue);
+                document.getElementById('fin-job-income').textContent = fmt.format(state.financialReport.jobIncome || 0);
                 document.getElementById('fin-rents').textContent = fmt.format(state.financialReport.passiveIncome - (state.bank.cdb * 0.008));
                 document.getElementById('fin-cdb').textContent = fmt.format(state.bank.cdb * 0.008);
                 document.getElementById('fin-city').textContent = fmt.format(state.financialReport.cityTax);
@@ -1456,6 +1470,10 @@
             document.getElementById('life-stress').className = `text-2xl font-black ${p.stress > 70 ? 'text-rose-400' : 'text-amber-400'}`;
             document.getElementById('life-education').textContent = EDUCATION_LABELS[p.educationLevel] || 'Básica';
             document.getElementById('life-age').textContent = `${p.age} anos`;
+            document.getElementById('life-job').textContent = p.job.title;
+            document.getElementById('life-job-detail').textContent = p.job.salary ? `${fmt.format(p.job.salary)}/mês · ${p.job.years} ano(s) de experiência` : 'Escolha um trabalho para começar sua trajetória profissional.';
+            document.getElementById('life-job-actions').innerHTML = p.job.id !== 'none' ? `<button onclick="quitJob()" class="bg-rose-900/60 border border-rose-700 text-rose-200 rounded-lg px-3 py-2 text-xs font-bold">Pedir demissão</button>` : '';
+            document.getElementById('life-career-list').innerHTML = CAREERS.map(c => { const locked = p.educationLevel < c.req; return `<button ${locked ? 'disabled' : ''} onclick="applyCareer('${c.id}')" class="text-left p-3 rounded-lg border ${locked ? 'border-slate-800 bg-slate-950/50 opacity-50' : 'border-cyan-800 bg-slate-900 hover:bg-slate-800'}"><p class="text-xs font-bold text-white">${c.title}</p><p class="text-[10px] text-emerald-400">${fmt.format(c.salary)}/mês</p><p class="text-[10px] text-slate-500">${locked ? `Exige ${EDUCATION_LABELS[c.req]}` : 'Candidatar-se'}</p></button>`; }).join('');
             const labels = { family: 'Família', partner: 'Parceiro(a)', friends: 'Amigos' };
             document.getElementById('life-relationships').innerHTML = Object.entries(labels).map(([k,l]) => `<div><div class="flex justify-between text-xs mb-1"><span class="text-slate-400">${l}</span><span class="text-white font-bold">${Math.round(p.relationships[k])}%</span></div><div class="h-2 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-rose-500 rounded-full" style="width:${p.relationships[k]}%"></div></div></div>`).join('') + `<p class="text-xs text-slate-500 mt-3">${esc(p.family.partner)} · ${p.family.children} filho(s)${p.family.heir ? ` · Herdeiro: ${esc(p.family.heir)}` : ''}</p>`;
             const assets = [['home','Residência'],['car','Veículos'],['yacht','Iate'],['plane','Aeronave']];
@@ -1471,6 +1489,11 @@
             else if(action === 'retire') { if(p.age < 50) return showToast('Aposentadoria indisponível', 'A aposentadoria planejada fica disponível a partir dos 50 anos.', 'warning'); if(!p.succession?.active || !p.family.children) return showToast('Sucessão incompleta', 'Planeje a sucessão e tenha um herdeiro antes de se aposentar.', 'warning'); executeSuccession(); return; }
             p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress)); Object.keys(p.relationships).forEach(k => p.relationships[k] = Math.max(0, Math.min(100, p.relationships[k]))); updateUI(); manualSave();
         }
+        function applyCareer(id) {
+            ensureLifeState(); const c = CAREERS.find(x => x.id === id); if(!c) return; if(state.player.educationLevel < c.req) return showToast('Formação insuficiente', `Estude até ${EDUCATION_LABELS[c.req]} para concorrer.`, 'warning');
+            state.player.job = { ...c, years: 0 }; state.player.stress += c.stress; addNews('VIDA', `Você conseguiu uma vaga como ${c.title}.`); updateUI(); manualSave();
+        }
+        function quitJob() { ensureLifeState(); if(state.player.job.id === 'none') return; addNews('VIDA', `Você saiu do emprego de ${state.player.job.title} para buscar novos caminhos.`); state.player.job = { id: 'none', title: 'Desempregado', salary: 0, years: 0 }; state.player.stress = Math.max(0, state.player.stress - 8); updateUI(); manualSave(); }
         function buyPersonalAsset(type) {
             ensureLifeState(); const a = PERSONAL_ASSETS[type]; if(!a || state.player.assets[type]) return;
             const price = Math.floor(a.price * state.inflationMult); if(!checkBalance(price)) return; state.cash -= price; state.player.assets[type] = price; logTx(`Compra pessoal: ${a.label}`, -price); state.player.health = Math.min(100, state.player.health + a.health); state.player.stress = Math.max(0, state.player.stress + a.stress); addNews('VIDA', `Você comprou ${a.label.toLowerCase()} e ampliou seu patrimônio pessoal.`); updateUI(); manualSave();
@@ -1524,7 +1547,7 @@
         function toggleSaleStatus(id) { let c = state.companies.find(x => x.id === id); c.openForSale = (c.openForSale === false) ? true : false; updateUI(); }
         function hire(id, t, qty) { let c = state.companies.find(x => x.id === id); let p = state.ownedProperties.find(x => x.id === c.propertyId); let cap = p ? p.cap : 999999999; if (c.workers + c.managers + qty > cap) return showToast('Lotação', 'Imóvel lotado!', 'warning'); if (t === 'w') c.workers += qty; if(t==='m') c.managers += qty; updateUI(); }
         function fire(id, t, qty) { let c = state.companies.find(x => x.id === id); if (t === 'w') c.workers = Math.max(0, c.workers - qty); if(t==='m') c.managers = Math.max(0, c.managers - qty); updateUI(); }
-        function startCompany() { let n = sanitizeText(document.getElementById('input-empresa-nome').value); let pid = document.getElementById('select-empresa-imovel').value; let sec = document.getElementById('select-empresa-setor').value; let cap = Number(document.getElementById('input-empresa-capital').value) || 0; if(!n) return showToast('Dados incompletos', 'Informe um nome para a empresa.', 'warning'); if(!Number.isFinite(cap) || cap < 0) return showToast('Capital inválido', 'Informe um valor igual ou maior que zero.', 'warning'); if(!pid) return showToast('Imóvel obrigatório', 'Selecione um imóvel livre para sediar a empresa.', 'warning'); let cost = COSTS.companyCreation + cap; if(!checkBalance(cost)) return; state.cash -= cost; state.companies.push({ id: Date.now().toString(), name: n, propertyId: pid, sector: sec, invested: cap, ownership: 100, openForSale: true, workers: 0, managers: 0, profit: 0, valuation: 0, focus: 'padrao', upgrades: { tech: 0, mkt: 0 }, age: 0 }); document.getElementById('modal-nova-empresa').classList.add('hidden'); updateUI(); }
+        function startCompany() { let n = sanitizeText(document.getElementById('input-empresa-nome').value); let pid = document.getElementById('select-empresa-imovel').value; let sec = document.getElementById('select-empresa-setor').value; let cap = Number(document.getElementById('input-empresa-capital').value) || 0; if(!n) return showToast('Dados incompletos', 'Informe um nome para a empresa.', 'warning'); if(!Number.isFinite(cap) || cap < 0) return showToast('Capital inválido', 'Informe um valor igual ou maior que zero.', 'warning'); if(!pid) return showToast('Escolha uma sede ou coworking.', 'warning'); let cost = COSTS.companyCreation + cap; if(!checkBalance(cost)) return; state.cash -= cost; state.companies.push({ id: Date.now().toString(), name: n, propertyId: pid === 'coworking' ? null : pid, sector: sec, invested: cap, ownership: 100, openForSale: true, workers: 0, managers: 0, profit: 0, valuation: 0, focus: 'padrao', upgrades: { tech: 0, mkt: 0 }, age: 0 }); document.getElementById('modal-nova-empresa').classList.add('hidden'); updateUI(); }
         function openManageCompany(id) { pendingManageId = id; let c = state.companies.find(x=>x.id===id); document.getElementById('manage-comp-name').textContent = c.name; document.getElementById('select-manage-focus').value = c.focus || 'padrao'; document.getElementById('modal-manage-company').classList.remove('hidden'); }
         function saveCompanyManagement() { let c = state.companies.find(x=>x.id===pendingManageId); c.focus = document.getElementById('select-manage-focus').value; document.getElementById('modal-manage-company').classList.add('hidden'); updateUI(); }
         function buyCompanyUpgrade(type) { let c = state.companies.find(x=>x.id===pendingManageId); let cost = 100000; if (!checkBalance(cost)) return; state.cash -= cost; c.upgrades[type]++; updateUI(); }
@@ -1556,7 +1579,7 @@
             }).join('');
             
             let sel = document.getElementById('select-empresa-imovel');
-            if(sel) sel.innerHTML = '<option value="">-- Imóvel --</option>' + state.ownedProperties.filter(p=>!p.rented && !state.companies.some(c=>c.propertyId===p.id)).map(p=>`<option value="${p.id}">${p.name} (Cap: ${p.cap})</option>`).join('');
+            if(sel) sel.innerHTML = '<option value="coworking">Coworking / operação remota (sem imóvel)</option>' + state.ownedProperties.filter(p=>!p.rented && !state.companies.some(c=>c.propertyId===p.id)).map(p=>`<option value="${p.id}">${p.name} (Cap: ${p.cap})</option>`).join('');
         }
         function buyProp(t, bp, cap, maint, n) { let pr = bp * state.economy.demands.imoveis; if(!checkBalance(pr)) return; state.cash -= pr; state.ownedProperties.push({id: Date.now().toString(), type: t, name: n, cap: cap, maint: maint, basePrice: bp, rented: false}); logTx(`Compra Imóvel: ${n}`, -pr); updateUI(); }
         function sellProp(id) { let p = state.ownedProperties.find(x=>x.id===id); let val = p.basePrice * state.economy.demands.imoveis * 0.9; state.cash += val; state.ownedProperties = state.ownedProperties.filter(x=>x.id!==id); logTx(`Venda Imóvel: ${p.name}`, val); updateUI(); }
