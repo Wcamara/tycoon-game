@@ -21,6 +21,30 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .pulse-red { animation: pulseRed 2s infinite; }
         @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); } 100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); } }
+        @media (max-width: 767px) {
+            body { overflow: hidden; }
+            nav { height: 100px; flex: 0 0 100px; border-right: 0; border-bottom: 1px solid #1e293b; }
+            nav > div:first-child { padding: 7px 12px; height: 36px; }
+            nav > div:first-child h1 { font-size: 1rem; }
+            nav > div:nth-child(2) { display: none; }
+            nav > div:nth-child(3) { flex: 0 0 42px; height: 42px; padding: 4px 8px; gap: 5px; }
+            nav .tab-btn { width: auto; min-width: max-content; padding: 7px 10px; font-size: 10px; }
+            nav .tab-btn i { width: auto; margin-right: 3px; }
+            nav > div:nth-last-child(2) { height: 22px; padding: 2px 8px; border-top: 0; }
+            nav > div:nth-last-child(2) button { padding: 2px; font-size: 9px; }
+            nav > div:last-child { display: none; }
+            main > header { padding: 7px 10px; min-height: 52px; gap: 6px; }
+            main > header > div:first-child { gap: 9px; }
+            main > header span.block { font-size: 8px; letter-spacing: .05em; }
+            #ui-cash { font-size: 1rem; }
+            #ui-networth { font-size: .8rem; }
+            #ui-legacy { font-size: .85rem; }
+            #era-badge { display: none; }
+            #ui-current-date-mobile { display: inline !important; }
+            main > div.flex-1 { padding: 12px; }
+            .tab-content { gap: 1rem; }
+        }
+        #ui-current-date-mobile { display: none; }
     </style>
 </head>
 <body class="h-screen flex flex-col md:flex-row overflow-hidden selection:bg-emerald-500/30 relative">
@@ -136,6 +160,7 @@
                     <span class="relative flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-current"></span></span>
                     <span id="era-name">ESTABILIDADE</span>
                 </div>
+                <span id="ui-current-date-mobile" class="text-[10px] text-slate-400 font-mono whitespace-nowrap">Mês 1 / Ano 1</span>
             </div>
         </header>
 
@@ -1018,7 +1043,7 @@
             if(!p.job) p.job = { id: 'none', title: 'Desempregado', salary: 0, years: 0 }; if(!Number.isFinite(p.job.salary)) p.job.salary = 0; if(!Number.isFinite(p.job.years)) p.job.years = 0;
             p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress));
         }
-        function ensureBusinessState() { state.companies.forEach(c => { if(!Number.isFinite(c.tech)) c.tech = c.upgrades?.tech || 0; if(!Number.isFinite(c.brand)) c.brand = 0; if(!Number.isFinite(c.supplyHealth)) c.supplyHealth = 85; if(!Number.isFinite(c.rdProgress)) c.rdProgress = 0; }); }
+        function ensureBusinessState() { state.companies.forEach(c => { if(!Number.isFinite(c.tech)) c.tech = c.upgrades?.tech || 0; if(!Number.isFinite(c.brand)) c.brand = 0; if(!Number.isFinite(c.supplyHealth)) c.supplyHealth = 85; if(!Number.isFinite(c.rdProgress)) c.rdProgress = 0; if(!Number.isFinite(c.productQuality)) c.productQuality = 50; if(!Number.isFinite(c.contracts)) c.contracts = 0; }); }
 
         function checkSquadsAndLeague() {
             ensureWorldState();
@@ -1302,6 +1327,7 @@
             ensureLifeState();
             state.player.stress = Math.max(0, Math.min(100, state.player.stress + (state.companies.length ? 1 : 0) - 2));
             if(state.player.job && state.player.job.id !== 'none') state.player.job.years += (state.turn % 12 === 0 ? 1 : 0);
+            if(state.player.job && state.player.job.id !== 'none' && state.turn % 12 === 0 && state.player.job.years >= 2) { const next = CAREERS.find(c => c.salary > state.player.job.salary && c.req <= state.player.educationLevel); if(next && Math.random() < 0.35) { state.player.job = { ...next, years: 0 }; addNews('CARREIRA', `Você foi promovido a ${next.title} após demonstrar consistência no trabalho.`); } }
             if(state.player.stress > 75) state.player.health = Math.max(0, state.player.health - 2); else if(state.player.stress < 35) state.player.health = Math.min(100, state.player.health + 1);
             state.player.relationships.family = Math.max(0, Math.min(100, state.player.relationships.family - (state.player.stress > 70 ? 1 : 0)));
             if(state.turn % 12 === 0) { state.player.age++; state.player.health = Math.max(0, state.player.health - 1); if(state.player.age % 10 === 0) addNews('VIDA', `Você completou ${state.player.age} anos. Suas decisões pessoais pesam mais no legado.`); }
@@ -1333,7 +1359,7 @@
                 const customerTrust = 0.75 + (state.reputation.consumers / 200);
                 let rev = (c.workers * COSTS.workerBaseRevenue) * p * dem * state.inflationMult * capacityUse * rampUp * customerTrust;
                 let cost = ((c.workers * COSTS.workerSalary) + (c.managers * COSTS.managerSalary)) * state.inflationMult + (COSTS.fixedCost * state.inflationMult);
-                rev *= (1 + (c.brand || 0) * 0.03) * (1 + (c.tech || 0) * 0.05) * (0.65 + ((c.supplyHealth || 85) / 250));
+                rev *= (1 + (c.brand || 0) * 0.03) * (1 + (c.tech || 0) * 0.05) * (0.65 + ((c.supplyHealth || 85) / 250)) * (0.8 + ((c.productQuality || 50) / 250));
                 cost *= 1 + (c.tech || 0) * 0.01;
                 if(state.reputation.employees < 30) cost *= 1.15;
                 if(state.reputation.employees > 75) cost *= 0.95;
@@ -1407,6 +1433,7 @@
             document.getElementById('btn-tab-smartcity').classList.toggle('hidden', !state.smartcity.unlocked);
             document.getElementById('btn-tab-fut-admin').classList.toggle('hidden', !state.futebol.clubes.some(c => c.shares >= 50));
             document.getElementById('ui-current-date').textContent = `Mês ${((state.turn-1)%12)+1} / Ano ${Math.floor((state.turn-1)/12)+1}`;
+            document.getElementById('ui-current-date-mobile').textContent = document.getElementById('ui-current-date').textContent;
             
             if(document.getElementById('tab-geral').classList.contains('active')) {
                 document.getElementById('lifestyle-container').innerHTML = LIFESTYLES.map(l => `<button onclick="state.player.lifestyle='${l.id}';updateUI()" class="w-full text-left p-3 rounded-xl border transition-colors ${state.player.lifestyle===l.id ? 'bg-indigo-900 border-indigo-500 text-indigo-300':'bg-slate-900 border-slate-700 text-slate-400 hover:bg-slate-800'}"><span class="font-bold">${l.name}</span> <span class="text-xs opacity-70">(${fmt.format(l.cost * state.inflationMult)})</span></button>`).join('');
@@ -1511,6 +1538,7 @@
             state.cash -= cost; logTx(type === 'tech' ? 'Investimento em P&D' : 'Investimento em marca', -cost); if(type === 'tech') { c.tech = (c.tech || 0) + 1; c.rdProgress = 0; } else c.brand = (c.brand || 0) + 1;
             addNews('EMPRESA', `${c.name} recebeu investimento em ${type === 'tech' ? 'P&D' : 'marca'}.`); updateUI(); manualSave();
         }
+        function improveProduct(id) { const c = state.companies.find(x => x.id === id); const cost = 100000; if(!c || !checkBalance(cost)) return; state.cash -= cost; c.productQuality = Math.min(100, (c.productQuality || 50) + 8); c.contracts = (c.contracts || 0) + 1; logTx(`Qualidade de produto: ${c.name}`, -cost); addNews('EMPRESA', `${c.name} melhorou a qualidade e fechou um novo contrato comercial.`); updateUI(); manualSave(); }
 
         function renderCelular() {
             document.getElementById('news-container').innerHTML = state.news.map(n => `<div class="p-4 border-b border-slate-800/50 text-sm text-slate-300 hover:bg-slate-900"><span class="font-black ${n.type==='CRISE'?'text-rose-500':(n.type==='BOOM'?'text-emerald-400':(n.type==='OPORTUNIDADE'?'text-amber-400':'text-sky-400'))} mr-2 text-xs">[${esc(n.type)}]</span>${esc(n.title)}</div>`).join('');
@@ -1542,7 +1570,7 @@
                 <button onclick="toggleSaleStatus('${c.id}')" class="text-[10px] uppercase font-bold border ${c.openForSale !== false ? 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/50' : 'border-rose-500/30 text-rose-400 hover:bg-rose-900/50'} px-2 py-1 rounded w-full transition-colors mb-2"><i class="fa-solid ${c.openForSale !== false ? 'fa-door-open' : 'fa-lock'} mr-1"></i> ${c.openForSale !== false ? 'Aberto a M&A' : 'Fechado para Venda'}</button>
                 <div class="bg-slate-900 p-4 rounded-xl mb-4 text-center border border-slate-800"><span class="text-[10px] text-slate-500 font-bold uppercase block mb-1">Lucro Mensal</span><p class="text-2xl font-black ${c.profit>=0?'text-emerald-400':'text-rose-400'}">${fmt.format(c.profit)}</p></div><div class="space-y-3 mb-4">
                 <div class="flex items-center justify-between bg-slate-900/50 p-2 rounded-lg border border-slate-800"><span class="text-xs font-bold text-slate-400 uppercase">Trabalhadores <span class="text-indigo-400">(${c.workers+c.managers}/${cap>1000?'∞':cap})</span></span><div class="flex gap-1"><button onclick="fire('${c.id}','w',10)" class="px-2 py-1 bg-rose-950 text-rose-500 rounded text-[10px] hover:bg-rose-900 font-bold">-10</button><button onclick="fire('${c.id}','w',1)" class="px-2 py-1 bg-rose-900 text-rose-300 rounded text-xs hover:bg-rose-800 font-bold">-1</button><button onclick="hire('${c.id}','w',1)" class="px-2 py-1 bg-emerald-900 text-emerald-300 rounded text-xs hover:bg-emerald-800 font-bold">+1</button><button onclick="hire('${c.id}','w',10)" class="px-2 py-1 bg-emerald-950 text-emerald-500 rounded text-[10px] hover:bg-emerald-900 font-bold">+10</button></div></div>
-                </div><div class="grid grid-cols-2 gap-2 mb-2"><button onclick="investCompany('${c.id}','tech')" class="bg-sky-900/50 text-sky-200 border border-sky-700 rounded-lg py-2 text-[10px] font-bold">P&D · R$250 mil</button><button onclick="investCompany('${c.id}','brand')" class="bg-fuchsia-900/50 text-fuchsia-200 border border-fuchsia-700 rounded-lg py-2 text-[10px] font-bold">Marca · R$150 mil</button></div><div class="mt-auto grid grid-cols-2 gap-2"><button onclick="openManageCompany('${c.id}')" class="bg-indigo-700/50 text-indigo-100 border border-indigo-600 rounded-lg py-2 text-xs font-bold">Admin (P&D)</button><button onclick="openSale('${c.id}')" class="bg-amber-700/50 text-amber-100 border border-amber-600 rounded-lg py-2 text-xs font-bold">Vender S.A</button></div></div>`;
+                </div><div class="grid grid-cols-2 gap-2 mb-2"><button onclick="investCompany('${c.id}','tech')" class="bg-sky-900/50 text-sky-200 border border-sky-700 rounded-lg py-2 text-[10px] font-bold">P&D · R$250 mil</button><button onclick="investCompany('${c.id}','brand')" class="bg-fuchsia-900/50 text-fuchsia-200 border border-fuchsia-700 rounded-lg py-2 text-[10px] font-bold">Marca · R$150 mil</button></div><button onclick="improveProduct('${c.id}')" class="w-full mb-2 bg-emerald-900/40 text-emerald-200 border border-emerald-700 rounded-lg py-2 text-[10px] font-bold">Produto e qualidade: ${Math.round(c.productQuality||50)}/100 · Melhorar (R$100 mil)</button><div class="mt-auto grid grid-cols-2 gap-2"><button onclick="openManageCompany('${c.id}')" class="bg-indigo-700/50 text-indigo-100 border border-indigo-600 rounded-lg py-2 text-xs font-bold">Admin (P&D)</button><button onclick="openSale('${c.id}')" class="bg-amber-700/50 text-amber-100 border border-amber-600 rounded-lg py-2 text-xs font-bold">Vender S.A</button></div></div>`;
             }).join('');
         }
         function toggleSaleStatus(id) { let c = state.companies.find(x => x.id === id); c.openForSale = (c.openForSale === false) ? true : false; updateUI(); }

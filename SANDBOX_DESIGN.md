@@ -151,3 +151,11 @@ O valor da participação deverá depender do desempenho esportivo, caixa, torci
 4. Criar metas de temporada e orçamento detalhado no futebol.
 5. Evoluir o jornal e a ambientação visual.
 6. Adicionar cidades e macroeconomia mais profundas.
+
+## Implementado nesta iteração
+
+- Barra mobile compacta: navegação horizontal, indicadores financeiros reduzidos, data no cabeçalho e controles de tempo ocultos da área principal.
+- Experiência profissional preservada ao clicar no cargo atual.
+- Promoções automáticas condicionadas a tempo de casa e formação.
+- Salário contabilizado no fluxo de caixa mensal e no DRE.
+- Qualidade de produto e contratos comerciais com investimento por empresa.
