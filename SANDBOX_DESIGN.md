@@ -104,3 +104,50 @@ O valor da participação deverá depender do desempenho esportivo, caixa, torci
 - Novo começo econômico com caixa inicial menor e fundação de empresa por coworking, sem exigir imóvel próprio.
 - Manutenção do patrimônio pessoal contabilizada no DRE e no fluxo de caixa mensal.
 - Painel visual de jornada pessoal com elementos de ambientação para reduzir a sensação de planilha.
+
+## Ideias avaliadas para as próximas versões
+
+### Vida e carreira
+
+- Histórico profissional com currículo, entrevistas, promoções e demissões por desempenho.
+- Especializações por área: vendas, tecnologia, finanças, política, esporte e comunicação.
+- Rotina semanal com escolhas de trabalho, estudo, lazer, saúde e família.
+- Relações com pessoas nomeadas, cada uma com personalidade, profissão, interesses e memória das decisões do jogador.
+- Crises pessoais contextualizadas, como burnout, mudança de cidade, divórcio, doença e oportunidades inesperadas.
+- Dinastia real: herdeiros com atributos próprios, educação, ambições e chance de contestar decisões do antecessor.
+
+### Empresas
+
+- Conselho de administração com metas e votos de acionistas.
+- Funcionários-chave com competência, salário, lealdade e risco de saída para concorrentes.
+- Produtos individuais, preço, qualidade, marketing, estoque e satisfação do cliente.
+- Contratos com prazo, fornecedores alternativos e risco de concentração.
+- Pesquisa com projetos que desbloqueiam tecnologias, em vez de bônus genéricos.
+- Falência, recuperação judicial, venda parcial e reestruturação de dívidas.
+- Substituir Fake News e sabotagem por inteligência competitiva, lobby legal, auditoria e disputa de mercado.
+
+### Futebol
+
+- Metas de temporada negociadas com a diretoria e consequências por descumprimento.
+- Orçamento separado para salários, transferências, base, estádio e departamento médico.
+- Jogadores com personalidade, ambição, adaptação, histórico de lesões e desenvolvimento por treinamento.
+- Agentes, cláusulas, empréstimos, luvas, bônus e conflitos de vestiário.
+- Identidade da torcida, clássicos, preço de ingresso, presença e pressão organizada.
+- Centro de notícias esportivas com manchetes baseadas em resultados e decisões do proprietário.
+
+### Mundo e imersão
+
+- Cidades com emprego, renda, criminalidade, educação, moradia e qualidade de vida.
+- Empresas rivais criando produtos, contratando pessoas e reagindo a preços e campanhas.
+- Calendário de eleições, juros, crises logísticas, eventos esportivos e mudanças regulatórias.
+- Jornal visual com capas, fotos ilustrativas, gráficos e linha do tempo da vida do personagem.
+- Sistema de objetivos opcionais, como construir uma marca familiar, dominar um setor ou salvar um clube.
+
+### Prioridade recomendada
+
+1. Corrigir e aprofundar a carreira, com promoções e entrevistas.
+2. Criar pessoas nomeadas e relações com memória.
+3. Transformar empresas em operações de produtos, estoque e contratos.
+4. Criar metas de temporada e orçamento detalhado no futebol.
+5. Evoluir o jornal e a ambientação visual.
+6. Adicionar cidades e macroeconomia mais profundas.
