@@ -1317,7 +1317,7 @@
             const life = LIFESTYLES.find(l => l.id === state.player.lifestyle);
             
             let lifeCost = (life.cost * state.inflationMult); if(!hasPol('deputado')) { exp += lifeCost; state.financialReport.livingCosts += lifeCost; }
-            if(state.player.job && state.player.job.id !== 'none') { const salary = state.player.job.salary * state.inflationMult; pass += salary; state.financialReport.jobIncome = salary; }
+            if(state.player.job && state.player.job.id !== 'none') { const salary = state.player.job.salary * state.inflationMult; profit += salary; state.financialReport.jobIncome = salary; }
             const personalMaint = Object.entries(PERSONAL_ASSETS).reduce((sum, [key, asset]) => sum + (state.player.assets[key] ? asset.maint : 0), 0) * state.inflationMult;
             if(personalMaint > 0) { exp += personalMaint; state.financialReport.livingCosts += personalMaint; }
 
@@ -1422,7 +1422,7 @@
                 document.getElementById('fin-cdb').textContent = fmt.format(state.bank.cdb * 0.008);
                 document.getElementById('fin-city').textContent = fmt.format(state.financialReport.cityTax);
                 
-                let totalIn = state.financialReport.grossRevenue + state.financialReport.passiveIncome + state.financialReport.cityTax;
+                let totalIn = state.financialReport.grossRevenue + state.financialReport.jobIncome + state.financialReport.passiveIncome + state.financialReport.cityTax;
                 document.getElementById('fin-total-in').textContent = fmt.format(totalIn);
                 
                 document.getElementById('fin-op-costs').textContent = fmt.format(state.financialReport.companyCosts);
@@ -1491,6 +1491,7 @@
         }
         function applyCareer(id) {
             ensureLifeState(); const c = CAREERS.find(x => x.id === id); if(!c) return; if(state.player.educationLevel < c.req) return showToast('Formação insuficiente', `Estude até ${EDUCATION_LABELS[c.req]} para concorrer.`, 'warning');
+            if(state.player.job.id === c.id) return showToast('Cargo atual', `Você já trabalha como ${c.title}; sua experiência foi preservada.`, 'info');
             state.player.job = { ...c, years: 0 }; state.player.stress += c.stress; addNews('VIDA', `Você conseguiu uma vaga como ${c.title}.`); updateUI(); manualSave();
         }
         function quitJob() { ensureLifeState(); if(state.player.job.id === 'none') return; addNews('VIDA', `Você saiu do emprego de ${state.player.job.title} para buscar novos caminhos.`); state.player.job = { id: 'none', title: 'Desempregado', salary: 0, years: 0 }; state.player.stress = Math.max(0, state.player.stress - 8); updateUI(); manualSave(); }
@@ -1821,7 +1822,7 @@
             settleClubFinances();
             calcFinances();
             
-            state.cash += state.financialReport.grossRevenue + state.financialReport.passiveIncome + state.financialReport.cityTax;
+            state.cash += state.financialReport.grossRevenue + state.financialReport.jobIncome + state.financialReport.passiveIncome + state.financialReport.cityTax;
             state.cash -= (state.financialReport.companyCosts + state.financialReport.propMaint + state.financialReport.livingCosts + state.financialReport.loanInterest);
             
             if(state.turn % 12 === 0 && !hasPol('presidente')) {
