@@ -125,7 +125,8 @@
         <div class="p-4 border-t border-slate-800 bg-slate-900/50">
             <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-2 flex justify-between">Tempo <span id="save-indicator" class="text-emerald-500 hidden"><i class="fa-solid fa-check"></i> Salvo</span></p>
             <div class="flex gap-2">
-                <button onclick="advanceMonth()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-forward-step"></i> Mês</button>
+                <button onclick="advanceWeek()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-forward-step"></i> Semana</button>
+                <button onclick="advanceMonth()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white p-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-calendar-days"></i> Mês</button>
                 <button id="btn-autoplay" onclick="toggleTime()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white p-2 rounded-lg text-xs font-bold transition-colors"><i class="fa-solid fa-play"></i> Auto</button>
             </div>
             <p id="ui-current-date" class="text-center text-xs text-slate-400 mt-2 font-mono">Mês 1 / Ano 1</p>
@@ -242,7 +243,7 @@
                 <div class="relative overflow-hidden rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-indigo-950 via-slate-900 to-rose-950 p-6 shadow-2xl"><div class="absolute -right-4 -top-8 text-[120px] opacity-10">🌆</div><div class="relative max-w-xl"><p class="text-[10px] uppercase tracking-[0.3em] text-indigo-300 font-black">Sua jornada</p><h3 class="text-2xl font-black text-white mt-1">Construa uma vida antes de construir um império.</h3><p class="text-sm text-slate-300 mt-2">Trabalhe, estude, faça escolhas e transforme cada fase em uma história própria.</p><div class="flex gap-3 mt-4 text-2xl"><span title="Carreira">💼</span><span title="Educação">🎓</span><span title="Família">🏡</span><span title="Patrimônio">✈️</span></div></div></div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4"><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Saúde</p><p id="life-health" class="text-2xl font-black text-emerald-400">80/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Estresse</p><p id="life-stress" class="text-2xl font-black text-amber-400">20/100</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Educação</p><p id="life-education" class="text-2xl font-black text-sky-400">Básica</p></div><div class="glass-panel p-4 rounded-xl"><p class="text-[10px] uppercase font-bold text-slate-500">Idade</p><p id="life-age" class="text-2xl font-black text-white">22 anos</p></div></div>
                 <div class="glass-panel p-6 rounded-2xl border border-cyan-500/20 bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40"><div class="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><p class="text-[10px] uppercase font-bold tracking-widest text-cyan-400">Carreira e renda</p><h3 id="life-job" class="text-xl font-black text-white">Desempregado</h3><p id="life-job-detail" class="text-xs text-slate-400 mt-1">Escolha um trabalho para começar sua trajetória profissional.</p></div><div id="life-job-actions" class="flex flex-wrap gap-2"></div></div><div id="life-career-list" class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4"></div></div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><button onclick="lifeAction('study')" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Estudar (R$5 mil)</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button><button onclick="lifeAction('retire')" class="mt-2 w-full bg-purple-900/50 border border-purple-700 text-purple-200 p-3 rounded-lg text-xs font-bold">Aposentar e transferir legado</button></div></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Decisões pessoais</h3><div class="grid grid-cols-2 gap-2"><select id="life-study-course" class="col-span-2 bg-slate-900 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold"></select><button onclick="startStudy()" class="bg-sky-900/50 border border-sky-700 text-sky-200 p-3 rounded-lg text-xs font-bold">Iniciar estudo</button><button onclick="lifeAction('rest')" class="bg-emerald-900/50 border border-emerald-700 text-emerald-200 p-3 rounded-lg text-xs font-bold">Descansar</button><button onclick="lifeAction('network')" class="bg-indigo-900/50 border border-indigo-700 text-indigo-200 p-3 rounded-lg text-xs font-bold">Fazer networking</button><button onclick="lifeAction('family')" class="bg-rose-900/50 border border-rose-700 text-rose-200 p-3 rounded-lg text-xs font-bold">Cuidar da família</button></div><p id="life-status" class="text-xs text-slate-400 mt-4"></p></div><div class="glass-panel p-6 rounded-2xl"><h3 class="font-black text-white mb-4">Relacionamentos e sucessão</h3><div id="life-relationships" class="space-y-2"></div><button onclick="lifeAction('succession')" class="mt-4 w-full bg-amber-900/50 border border-amber-700 text-amber-200 p-3 rounded-lg text-xs font-bold">Planejar sucessão</button><button onclick="lifeAction('retire')" class="mt-2 w-full bg-purple-900/50 border border-purple-700 text-purple-200 p-3 rounded-lg text-xs font-bold">Aposentar e transferir legado</button></div></div>
                 <div class="glass-panel p-6 rounded-2xl border border-indigo-500/20"><h3 class="font-black text-white mb-4">Qualidade de vida e patrimônio pessoal</h3><div id="life-assets" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div></div>
             </section>
 
@@ -867,7 +868,7 @@
         ];
 
         let DEFAULT_STATE = {
-            cash: 20000, turn: 1, netWorth: 20000, autoPlay: null, inflationMult: 1.0,
+            cash: 20000, turn: 1, week: 1, netWorth: 20000, autoPlay: null, inflationMult: 1.0,
             companies: [], ownedProperties: [], bank: { cdb: 0, loan: 0 }, statement: [], news: [],
             reputation: { consumers: 50, employees: 50, government: 50, media: 50, investors: 50, fans: 50 },
             world: { lastEventTurn: 0, activeEvent: null, eventHistory: [], timeline: [], pendingConsequences: [], marketConfidence: 50, globalNewsTurn: 0, rivalRelations: {} },
@@ -1031,6 +1032,13 @@
             { id: 'manager', title: 'Gerente de operações', salary: 22000, req: 2, stress: 7 },
             { id: 'director', title: 'Diretor executivo', salary: 45000, req: 3, stress: 9 }
         ];
+        const STUDY_PROGRAMS = [
+            { id: 'tecnica_admin', title: 'Curso técnico de Administração', area: 'Administração', level: 1, months: 12, cost: 12000 },
+            { id: 'tecnica_tech', title: 'Curso técnico de Tecnologia', area: 'Tecnologia', level: 1, months: 12, cost: 15000 },
+            { id: 'faculdade_negocios', title: 'Faculdade de Negócios', area: 'Negócios', level: 2, months: 36, cost: 75000 },
+            { id: 'faculdade_engenharia', title: 'Faculdade de Engenharia', area: 'Engenharia', level: 2, months: 48, cost: 110000 },
+            { id: 'pos_gestao', title: 'Pós-graduação em Gestão', area: 'Gestão', level: 3, months: 24, cost: 90000 }
+        ];
         function ensureLifeState() {
             const p = state.player || (state.player = {});
             if(!Number.isFinite(p.age)) p.age = 22; if(!Number.isFinite(p.health)) p.health = 80; if(!Number.isFinite(p.stress)) p.stress = 20;
@@ -1041,6 +1049,7 @@
             if(!p.family) p.family = { partner: 'Sem parceiro', children: 0, heir: null }; if(!Number.isFinite(p.family.children)) p.family.children = 0;
             if(!p.assets) p.assets = { home: 0, car: 0, yacht: 0, plane: 0 }; ['home','car','yacht','plane'].forEach(k => { if(!Number.isFinite(p.assets[k])) p.assets[k] = 0; });
             if(!p.job) p.job = { id: 'none', title: 'Desempregado', salary: 0, years: 0 }; if(!Number.isFinite(p.job.salary)) p.job.salary = 0; if(!Number.isFinite(p.job.years)) p.job.years = 0;
+            if(!p.study) p.study = { program: null, monthsLeft: 0, totalMonths: 0, area: null };
             p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress));
         }
         function ensureBusinessState() { state.companies.forEach(c => { if(!Number.isFinite(c.tech)) c.tech = c.upgrades?.tech || 0; if(!Number.isFinite(c.brand)) c.brand = 0; if(!Number.isFinite(c.supplyHealth)) c.supplyHealth = 85; if(!Number.isFinite(c.rdProgress)) c.rdProgress = 0; if(!Number.isFinite(c.productQuality)) c.productQuality = 50; if(!Number.isFinite(c.contracts)) c.contracts = 0; }); }
@@ -1323,14 +1332,15 @@
             if(state.reputation.government < 20 && Math.random() < 0.12) { const fine = Math.min(Math.max(100000, state.cash * 0.04), 15000000); state.cash -= fine; logTx('Fiscalização extraordinária', -fine); addNews('CRISE', `Órgãos reguladores aplicaram uma multa de ${fmt.format(fine)}.`); }
             triggerWorldEvent();
         }
-        function advanceLife() {
+        function advanceLife(monthly = false) {
             ensureLifeState();
             state.player.stress = Math.max(0, Math.min(100, state.player.stress + (state.companies.length ? 1 : 0) - 2));
-            if(state.player.job && state.player.job.id !== 'none') state.player.job.years += (state.turn % 12 === 0 ? 1 : 0);
-            if(state.player.job && state.player.job.id !== 'none' && state.turn % 12 === 0 && state.player.job.years >= 2) { const next = CAREERS.find(c => c.salary > state.player.job.salary && c.req <= state.player.educationLevel); if(next && Math.random() < 0.35) { state.player.job = { ...next, years: 0 }; addNews('CARREIRA', `Você foi promovido a ${next.title} após demonstrar consistência no trabalho.`); } }
+            if(monthly && state.player.job && state.player.job.id !== 'none') state.player.job.years += (state.turn % 12 === 0 ? 1 : 0);
+            if(monthly && state.player.job && state.player.job.id !== 'none' && state.turn % 12 === 0 && state.player.job.years >= 2) { const next = CAREERS.find(c => c.salary > state.player.job.salary && c.req <= state.player.educationLevel); if(next && Math.random() < 0.35) { state.player.job = { ...next, years: 0 }; addNews('CARREIRA', `Você foi promovido a ${next.title} após demonstrar consistência no trabalho.`); } }
+            if(monthly && state.player.study && state.player.study.monthsLeft > 0) { state.player.study.monthsLeft--; if(state.player.study.monthsLeft <= 0) { const program = STUDY_PROGRAMS.find(x => x.id === state.player.study.program); if(program) { state.player.educationLevel = Math.max(state.player.educationLevel, program.level); state.player.education = ['basica','tecnica','superior','pos'][state.player.educationLevel]; addNews('VIDA', `Você concluiu ${program.title} em ${program.area}.`); showToast('Curso concluído', `${EDUCATION_LABELS[state.player.educationLevel]} alcançada.`, 'success'); } state.player.study = { program: null, monthsLeft: 0, totalMonths: 0, area: null }; } }
             if(state.player.stress > 75) state.player.health = Math.max(0, state.player.health - 2); else if(state.player.stress < 35) state.player.health = Math.min(100, state.player.health + 1);
             state.player.relationships.family = Math.max(0, Math.min(100, state.player.relationships.family - (state.player.stress > 70 ? 1 : 0)));
-            if(state.turn % 12 === 0) { state.player.age++; state.player.health = Math.max(0, state.player.health - 1); if(state.player.age % 10 === 0) addNews('VIDA', `Você completou ${state.player.age} anos. Suas decisões pessoais pesam mais no legado.`); }
+            if(monthly && state.turn % 12 === 0) { state.player.age++; state.player.health = Math.max(0, state.player.health - 1); if(state.player.age % 10 === 0) addNews('VIDA', `Você completou ${state.player.age} anos. Suas decisões pessoais pesam mais no legado.`); }
             if(state.player.health < 20 && Math.random() < 0.2) addNews('VIDA', 'Sua saúde exige atenção; reduza o estresse e cuide da rotina.');
         }
         function hasPol(id) { if (state.player.politicians.includes(id)) return true; if (id === 'deputado' && ['prefeito', 'governador', 'presidente'].includes(state.player.office)) return true; if (id === 'senador' && ['governador', 'presidente'].includes(state.player.office)) return true; if (id === 'presidente' && state.player.office === 'presidente') return true; return false; }
@@ -1432,7 +1442,7 @@
             
             document.getElementById('btn-tab-smartcity').classList.toggle('hidden', !state.smartcity.unlocked);
             document.getElementById('btn-tab-fut-admin').classList.toggle('hidden', !state.futebol.clubes.some(c => c.shares >= 50));
-            document.getElementById('ui-current-date').textContent = `Mês ${((state.turn-1)%12)+1} / Ano ${Math.floor((state.turn-1)/12)+1}`;
+            document.getElementById('ui-current-date').textContent = `Mês ${((state.turn-1)%12)+1} / Ano ${Math.floor((state.turn-1)/12)+1} · Semana ${state.week || 1}`;
             document.getElementById('ui-current-date-mobile').textContent = document.getElementById('ui-current-date').textContent;
             
             if(document.getElementById('tab-geral').classList.contains('active')) {
@@ -1497,6 +1507,10 @@
             document.getElementById('life-stress').className = `text-2xl font-black ${p.stress > 70 ? 'text-rose-400' : 'text-amber-400'}`;
             document.getElementById('life-education').textContent = EDUCATION_LABELS[p.educationLevel] || 'Básica';
             document.getElementById('life-age').textContent = `${p.age} anos`;
+            const studySelect = document.getElementById('life-study-course');
+            if(studySelect) { studySelect.innerHTML = STUDY_PROGRAMS.map(s => `<option value="${s.id}">${s.title} · ${s.months} meses · ${fmt.format(s.cost)}</option>`).join(''); if(p.study.program) studySelect.value = p.study.program; studySelect.disabled = p.study.monthsLeft > 0; }
+            const currentStudy = p.study.monthsLeft > 0 ? STUDY_PROGRAMS.find(s => s.id === p.study.program) : null;
+            document.getElementById('life-status').textContent = currentStudy ? `Estudando ${currentStudy.title}: ${p.study.monthsLeft} mês(es) restantes.` : 'Escolha uma formação; o curso avança no fechamento de cada mês.';
             document.getElementById('life-job').textContent = p.job.title;
             document.getElementById('life-job-detail').textContent = p.job.salary ? `${fmt.format(p.job.salary)}/mês · ${p.job.years} ano(s) de experiência` : 'Escolha um trabalho para começar sua trajetória profissional.';
             document.getElementById('life-job-actions').innerHTML = p.job.id !== 'none' ? `<button onclick="quitJob()" class="bg-rose-900/60 border border-rose-700 text-rose-200 rounded-lg px-3 py-2 text-xs font-bold">Pedir demissão</button>` : '';
@@ -1508,13 +1522,16 @@
         }
         function lifeAction(action) {
             ensureLifeState(); const p = state.player;
-            if(action === 'study') { const cost = 5000 * state.inflationMult; if(!checkBalance(cost)) return; state.cash -= cost; logTx('Educação pessoal', -cost); p.educationLevel = Math.min(3, p.educationLevel + 1); p.education = ['basica','tecnica','superior','pos'][p.educationLevel]; p.stress += 5; addNews('VIDA', `Você investiu em educação e alcançou o nível ${EDUCATION_LABELS[p.educationLevel]}.`); }
+            if(action === 'study') return startStudy();
             else if(action === 'rest') { p.stress -= 18; p.health += 6; addNews('VIDA', 'Uma pausa reduziu seu estresse e recuperou sua saúde.'); }
             else if(action === 'network') { p.stress += 3; p.relationships.friends += 8; state.reputation.investors = Math.min(100, state.reputation.investors + 3); addNews('VIDA', 'Seu networking abriu portas com investidores e parceiros.'); }
             else if(action === 'family') { p.stress -= 6; p.relationships.family += 10; p.family.children = Math.min(5, p.family.children + (Math.random() < 0.15 ? 1 : 0)); addNews('VIDA', 'Você priorizou a família e fortaleceu seus vínculos.'); }
             else if(action === 'succession') { if(!p.family.children) return showToast('Sem herdeiro', 'Tenha ao menos um filho antes de registrar um herdeiro.', 'warning'); p.family.heir = 'Filho mais velho'; p.succession = { plannedAt: state.turn, heir: p.family.heir, active: true }; p.relationships.family += 3; addNews('LEGADO', `Plano de sucessão criado: ${p.family.heir}.`); }
             else if(action === 'retire') { if(p.age < 50) return showToast('Aposentadoria indisponível', 'A aposentadoria planejada fica disponível a partir dos 50 anos.', 'warning'); if(!p.succession?.active || !p.family.children) return showToast('Sucessão incompleta', 'Planeje a sucessão e tenha um herdeiro antes de se aposentar.', 'warning'); executeSuccession(); return; }
             p.health = Math.max(0, Math.min(100, p.health)); p.stress = Math.max(0, Math.min(100, p.stress)); Object.keys(p.relationships).forEach(k => p.relationships[k] = Math.max(0, Math.min(100, p.relationships[k]))); updateUI(); manualSave();
+        }
+        function startStudy() {
+            ensureLifeState(); const id = document.getElementById('life-study-course')?.value; const program = STUDY_PROGRAMS.find(s => s.id === id); if(!program) return; if(state.player.study.monthsLeft > 0) return showToast('Curso em andamento', 'Conclua o curso atual antes de iniciar outro.', 'warning'); if(program.level > state.player.educationLevel + 1) return showToast('Pré-requisito', 'Conclua o nível anterior antes de avançar para esta formação.', 'warning'); const cost = Math.floor(program.cost * state.inflationMult); if(!checkBalance(cost)) return; state.cash -= cost; logTx(`Matrícula: ${program.title}`, -cost); state.player.study = { program: program.id, monthsLeft: program.months, totalMonths: program.months, area: program.area }; state.player.stress += 4; addNews('VIDA', `Você começou ${program.title}. A formação levará ${program.months} meses.`); updateUI(); manualSave();
         }
         function applyCareer(id) {
             ensureLifeState(); const c = CAREERS.find(x => x.id === id); if(!c) return; if(state.player.educationLevel < c.req) return showToast('Formação insuficiente', `Estude até ${EDUCATION_LABELS[c.req]} para concorrer.`, 'warning');
@@ -1793,12 +1810,20 @@
 
         function toggleTime() {
             if(state.autoPlay) { clearInterval(state.autoPlay); state.autoPlay = null; document.getElementById('btn-autoplay').innerHTML = '<i class="fa-solid fa-play"></i> Auto'; }
-            else { state.autoPlay = setInterval(advanceMonth, 2500); document.getElementById('btn-autoplay').innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; }
+            else { state.autoPlay = setInterval(advanceWeek, 1800); document.getElementById('btn-autoplay').innerHTML = '<i class="fa-solid fa-pause"></i> Pause'; }
+        }
+
+        function advanceWeek() {
+            state.week = (state.week || 1) + 1;
+            if(state.week > 4) { state.week = 1; advanceMonth(); return; }
+            advanceLife(false);
+            updateUI(); manualSave();
         }
 
         function advanceMonth() {
             state.turn++;
-            advanceLife();
+            state.week = 1;
+            advanceLife(true);
             // Monthly inflation makes costs, prices and real profit evolve over time.
             state.inflationMult = Math.min(5, state.inflationMult * (1 + 0.002 + Math.random() * 0.006));
             

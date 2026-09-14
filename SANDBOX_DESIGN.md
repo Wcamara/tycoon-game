@@ -159,3 +159,5 @@ O valor da participação deverá depender do desempenho esportivo, caixa, torci
 - Promoções automáticas condicionadas a tempo de casa e formação.
 - Salário contabilizado no fluxo de caixa mensal e no DRE.
 - Qualidade de produto e contratos comerciais com investimento por empresa.
+- Tempo híbrido com semanas para decisões pessoais e meses para fechamento financeiro.
+- Cursos escolhidos pelo jogador, com área, custo, duração, pré-requisitos e conclusão mensal.
